@@ -27,7 +27,7 @@
             提交新的議案提案，包含各類型議案的表單填寫。
           </p>
           <a 
-            :href="config.public.proposalFormUrl" 
+            :href="EXTERNAL_LINKS.proposalSystem" 
             target="_blank" 
             rel="noopener noreferrer"
             class="btn btn-primary"
@@ -78,7 +78,7 @@
             瀏覽歷次會議的會議紀錄和決議內容。
           </p>
           <a 
-            :href="config.public.meetingRecordsUrl" 
+            :href="EXTERNAL_LINKS.meetingRecords" 
             target="_blank" 
             rel="noopener noreferrer"
             class="btn btn-primary"
@@ -130,7 +130,7 @@
             回到學生自治會網站，瀏覽更多資訊和服務。
           </p>
           <a 
-            :href="config.public.congressWebsiteUrl" 
+            :href="EXTERNAL_LINKS.mainWebsite" 
             target="_blank" 
             rel="noopener noreferrer"
             class="btn btn-primary"
@@ -155,7 +155,7 @@
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">系統公告</h2>
           </div>
           <p class="text-gray-600 dark:text-gray-400 mb-4">
-            本系統為開放原始碼專案，歡迎貢獻與回饋。
+            本系統開源，歡迎貢獻。
           </p>
           <a 
             :href="config.public.githubRepoUrl" 
@@ -179,15 +179,15 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="text-center">
-          <div class="text-3xl font-bold text-primary mb-2">{{ stats.totalBills }}</div>
+          <div class="text-3xl font-bold text-secondary mb-2">{{ stats.totalBills }}</div>
           <div class="text-gray-600 dark:text-gray-400">總議案數</div>
         </div>
         <div class="text-center">
-          <div class="text-3xl font-bold text-primary mb-2">{{ stats.currentTerm }}</div>
+          <div class="text-3xl font-bold text-secondary mb-2">{{ currentTerm }}</div>
           <div class="text-gray-600 dark:text-gray-400">目前屆次</div>
         </div>
         <div class="text-center">
-          <div class="text-3xl font-bold text-primary mb-2">{{ stats.thisTermBills }}</div>
+          <div class="text-3xl font-bold text-secondary mb-2">{{ stats.thisTermBills }}</div>
           <div class="text-gray-600 dark:text-gray-400">本屆議案數</div>
         </div>
       </div>
@@ -209,7 +209,6 @@ useHead({
 // 統計資料
 const stats = ref({
   totalBills: 0,
-  currentTerm: 26,
   thisTermBills: 0
 })
 
@@ -224,4 +223,9 @@ onMounted(async () => {
     console.error('載入統計資料失敗:', error)
   }
 })
+
+import { useCurrentTerm } from '~/composables/useCurrentTerm'
+const { currentTerm, availableTermsRange } = useCurrentTerm()
+
+import { EXTERNAL_LINKS } from '~/utils/constants.js'
 </script>

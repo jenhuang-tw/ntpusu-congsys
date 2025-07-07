@@ -30,7 +30,7 @@
             </p>
             <div class="space-y-2">
               <a 
-                href="https://docs.google.com/document/d/1lhLoCy2CnXbiklRLFWBeqj_KL4tHKphz/edit?usp=sharing&ouid=111956381691113417844&rtpof=true&sd=true" 
+                :href="TEMPLATE_LINKS.regulationAmendment" 
                 class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -38,7 +38,7 @@
                 📋 法規案 修正條文對照表
               </a>
               <a 
-                href="#" 
+                :href="TEMPLATE_LINKS.budgetForm" 
                 class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -46,7 +46,7 @@
                 📄 預算案 總預算書範例
               </a>
               <a 
-                href="#" 
+                :href="TEMPLATE_LINKS.budgetZhuijia" 
                 class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -54,7 +54,7 @@
                 📄 預算案 追加預算書範例
               </a>
               <a 
-                href="https://docs.google.com/document/d/1x3IeeIK_276Z-j5klBmnNuKSIj8jPFB5/edit?usp=share_link&ouid=111956381691113417844&rtpof=true&sd=true" 
+                :href="TEMPLATE_LINKS.priceComparison" 
                 class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -62,15 +62,16 @@
                 📊 預算案 比價資料單
               </a>
               <a 
-                href="#" 
+                :href="TEMPLATE_LINKS.juesuan" 
                 class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 📄 決算案 總決算書範例
               </a>
+              
               <a 
-                href="#" 
+                :href="TEMPLATE_LINKS.personalResume" 
                 class="block text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 text-sm hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -91,7 +92,7 @@
               </h3>
             </div>
             <p class="text-gray-600 dark:text-gray-300 mb-6">
-              邀請相關人員參與議會會議進行備詢
+              邀請相關人員列席會議，以備質（諮）詢
             </p>
             <button 
               class="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
@@ -187,14 +188,14 @@
               </h3>
             </div>
             <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <!--<p>
-                <strong>辦公時間：</strong><br>
-                週一至週五 9:00-17:00
+              <p>
+                <strong>辦公室：</strong><br>
+                商學大樓 B1F08 室
               </p>
               <p>
-                <strong>聯絡電話：</strong><br>
-                (02) 8674-1111 ext. 66666
-              </p>-->
+                <strong>議場：</strong><br>
+                綜合體育館 2F44 室
+              </p>
               <p>
                 <strong>電子郵件：</strong><br>
                 <a href="https://pili.app/email-html/show/?text=ntpuscs%40gmail.com&title=%E4%B8%89%E5%B3%BD%E6%A0%A1%E5%8D%80%E5%AD%B8%E7%94%9F%E8%AD%B0%E6%9C%83%20%E7%A7%98%E6%9B%B8%E8%99%95" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" target="_blank" rel="noopener noreferrer">
@@ -223,7 +224,7 @@
 </template>
 
 <script setup>
-
+import { EXTERNAL_LINKS } from '~/utils/constants.js'
     
 useHead({
   title: `其他服務 - 三峽校區議事服務`,
@@ -238,22 +239,20 @@ useHead({
 
 // 處理服務點擊事件
 const handleServiceClick = (serviceName) => {
-const config = useRuntimeConfig()
-const inviteSystemUrl = config.public.inviteSystemUrl
-const budgetSystemUrl = config.public.budgetSystemUrl
+
 switch (serviceName) {
   
   case '邀請備詢系統':
-    window.open(inviteSystemUrl, '_blank');
+    window.open(EXTERNAL_LINKS.inviteSystem, '_blank');
      break;
    case '預算變更系統':
-     window.open(budgetSystemUrl, '_blank');
+     window.open(EXTERNAL_LINKS.budgetSystem, '_blank');
      break;
    case '議事規則查詢':
-     window.open('https://ntpusu.org/regulation-index/rule-list-sanxia', '_blank');
+     window.open(EXTERNAL_LINKS.yiShiGuiZe, '_blank');
      break;
    case '會議直播':
-     window.open('https://www.youtube.com/@ntpusu-sanxia-student-congress', '_blank');
+     window.open(EXTERNAL_LINKS.liveStream, '_blank');
      break;
  }
 };

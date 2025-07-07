@@ -4,48 +4,60 @@ export const SITE_CONFIG = {
   fullName: '國立臺北大學學生自治會 三峽校區學生議會',
   englishName: 'Sanxia Campus Student Congress, NTPUSU',
   domain: 'sxcong.ntpusu.org',
-  email: 'ntpusu@gm.ntpu.edu.tw',
-  phone: '(02) 8674-1111 ext. 66666',
-  githubRepo: 'https://github.com/ntpusu/congress-service',
-  mainWebsite: 'https://ntpusu.org'
+  email: 'ntpuscs@gmail.com',
+  githubRepo: 'https://github.com/jenhuang-tw/ntpusu-congsys'
 };
 
 // 外部連結設定
 export const EXTERNAL_LINKS = {
-  proposalSystem: 'https://forms.gle/your-proposal-form-id',
-  meetingRecords: 'https://ntpusu.org/records',
-  mainWebsite: 'https://ntpusu.org',
-  inquirySystem: 'https://forms.gle/your-inquiry-form-id',
-  budgetSystem: 'https://forms.gle/your-budget-form-id',
-  rulesWebsite: 'https://ntpusu.org/rules',
-  liveStream: 'https://youtube.com/your-live-stream'
+  proposalSystem: 'https://forms.gle/WYSBv4zoXR8VnA6i9',
+  meetingRecords: 'https://ntpusu.org/conference/legi-sanxia/minute-sx',
+  mainWebsite: 'https://ntpusu.org/',
+  inviteSystem: 'https://forms.gle/5w2BfVCTQTpXxyfd7',
+  budgetSystem: 'https://forms.gle/hGQSzzAZcEdSHWBdA',
+  yiShiGuiZe: 'https://ntpusu.org/regulation-index/rule-list-sanxia',
+  liveStream: 'https://www.youtube.com/@ntpusu-sanxia-student-congress'
 };
 
 // 提案附件範本連結
 export const TEMPLATE_LINKS = {
-  priceComparison: 'https://drive.google.com/file/d/your-price-comparison-template',
-  regulationAmendment: 'https://drive.google.com/file/d/your-regulation-amendment-template',
-  budgetForm: 'https://drive.google.com/file/d/your-budget-form-template',
-  personalResume: 'https://drive.google.com/file/d/your-personal-resume-template'
+  regulationAmendment: 'https://docs.google.com/document/d/1lhLoCy2CnXbiklRLFWBeqj_KL4tHKphz/edit?usp=sharing&ouid=111956381691113417844&rtpof=true&sd=true',
+  budgetForm: 'https://docs.google.com/spreadsheets/d/1TieOJ6umnl5VxDpS22a49HgYh4v4Ax2J/edit?usp=sharing&ouid=111956381691113417844&rtpof=true&sd=true',
+  budgetZhuijia: 'https://docs.google.com/spreadsheets/d/1MrDxKWyRveljA1N2anLXBQH7qwyNx-vc/edit?usp=sharing&ouid=111956381691113417844&rtpof=true&sd=true',
+  priceComparison: 'https://docs.google.com/document/d/1x3IeeIK_276Z-j5klBmnNuKSIj8jPFB5/edit?usp=share_link&ouid=111956381691113417844&rtpof=true&sd=true',
+  juesuan: 'https://docs.google.com/spreadsheets/d/19gAvW9p-7t8gvnISfWJu3H6RZXVlSi6E/edit?usp=sharing&ouid=111956381691113417844&rtpof=true&sd=true',
+  personalResume: 'https://docs.google.com/document/d/1DbLz9sb0GfWZuPXfw96a_Fzp9zlHd00x/edit?usp=share_link&ouid=111956381691113417844&rtpof=true&sd=true'
 };
 
 // 議案類型選項
 export const BILL_TYPES = [
-  '人事案',
+  '法律案',
   '預算案',
-  '法規案',
-  '質詢案',
-  '臨時動議',
-  '其他'
+  '決算案',
+  '人事案',
+  '備查案',
+  '施政報告',
+  '專案報告',
+  '外部組織提案、加入聲明案'
 ];
 
 // 提案機關選項
 export const PROPOSER_ORGANS = [
+  '本會議員',
+  '本會議長',
+  '本會秘書處',
+  '總會 秘書處',
+  '學生法庭 書記處',
   '三峽校區學生會 會長副會長',
-  '三峽校區學生議會 議長副議長',
-  '三峽校區學生議會 議員',
-  '三峽校區學生會 各部門',
-  '其他'
+  '三峽校區學生會 秘書處',
+  '三峽校區學生會 活動部',
+  '三峽校區學生會 學生權益部',
+  '三峽校區學生會 財務部',
+  '三峽校區學生會 公關部',
+  '三峽校區學生會 新聞部',
+  '三峽校區學生會 國際事務部',
+  '三峽校區學生會 資訊部',
+  '三峽校區學生會 選舉委員會'
 ];
 
 // 分頁設定
