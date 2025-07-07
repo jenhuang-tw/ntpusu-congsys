@@ -1,3 +1,5 @@
+// composables/useBills.js
+
 import { ref, computed, watch } from 'vue'
 
 export const useBills = () => {
@@ -6,7 +8,7 @@ export const useBills = () => {
   const loading = ref(false)
   const error = ref(null)
   const currentPage = ref(1)
-  const pageSize = ref(10)
+  const pageSize = ref(10) // 預設只請求10筆資料，但後續請求時覆蓋它
   const totalItems = ref(0)
   const totalPages = ref(0)
   const filters = ref({})
@@ -33,26 +35,23 @@ export const useBills = () => {
     
     try {
       const params = {
-        page: currentPage.value,
-        pageSize: pageSize.value,
+        page: 1, // 如果你想一次性獲取所有資料，頁碼通常設為 1
+        pageSize: 500, // <-- 將這裡改為一個足夠大的數值，例如 500 或 1000
         ...filters.value,
         ...queryParams
       }
 
-      // 修正：直接獲取 response 物件，因為 API 回傳的不是 { data: ... } 格式
       const response = await $fetch('/api/bills', {
         params
       })
 
-      // 確保 response 包含 bills 陣列
       if (response && Array.isArray(response.bills)) {
         bills.value = response.bills
-        totalItems.value = response.total || 0
-        totalPages.value = response.totalPages || 0
-        currentPage.value = response.page || 1 // 從 API 響應中獲取當前頁碼
-        pageSize.value = response.pageSize || 10 // 從 API 響應中獲取頁面大小
+        totalItems.value = response.total || bills.value.length // 使用 API 返回的總數，如果沒有則用當前獲取到的數量
+        totalPages.value = response.totalPages || Math.ceil(totalItems.value / params.pageSize) // 重新計算總頁數
+        currentPage.value = response.page || 1
+        // pageSize.value = response.pageSize || params.pageSize; // 可以更新 Composables 內部的 pageSize ref 以匹配請求的數量
       } else {
-        // 如果 API 響應格式不符合預期，清空數據
         bills.value = []
         totalItems.value = 0
         totalPages.value = 0
@@ -77,37 +76,39 @@ export const useBills = () => {
     
     try {
       const params = {
-        page: currentPage.value,
-        pageSize: pageSize.value,
+        page: 1, // 如果想一次性獲取該屆次所有資料，頁碼設為 1
+        pageSize: 500, // <-- 將這裡改為一個足夠大的數值
         ...filters.value,
         ...queryParams
       }
 
-      // 關鍵修改：直接獲取整個響應物件，因為 API 回傳的不是 { data: ... } 格式
       const response = await $fetch(`/api/bills/${termNumber}`, {
         params
       })
 
-      // 確保 response 包含 bills 陣列
+
+
       if (response && Array.isArray(response.bills)) {
+        
+
+
         bills.value = response.bills
-        totalItems.value = response.total || 0
-        totalPages.value = response.totalPages || 0
-        currentPage.value = response.page || 1 // 從 API 響應中獲取當前頁碼
-        pageSize.value = response.pageSize || 10 // 從 API 響應中獲取頁面大小
+        totalItems.value = response.total || bills.value.length
+        totalPages.value = response.totalPages || Math.ceil(totalItems.value / params.pageSize)
+        currentPage.value = response.page || 1
+        // pageSize.value = response.pageSize || params.pageSize;
       } else {
-        // 如果 API 響應格式不符合預期，清空數據
         bills.value = []
         totalItems.value = 0
         totalPages.value = 0
         console.warn('API response for bills by term was not in expected format:', response);
       }
       
-      return response // 返回整個響應物件給 useAsyncData
+      return response
     } catch (err) {
       error.value = err.message || `獲取第${termNumber}屆議案資料失敗`
       console.error('Error fetching bills by term:', err)
-      throw err // 重新拋出錯誤，讓 useAsyncData 捕獲
+      throw err
     } finally {
       loading.value = false
     }
@@ -119,16 +120,13 @@ export const useBills = () => {
     error.value = null
     
     try {
-      // 關鍵修改：直接獲取 response 物件，因為 API 回傳的不是 { data: ... } 格式
       const response = await $fetch(`/api/bills/${termNumber}`, {
         params: {
           page: 1,
-          pageSize: 1000 // 獲取大量資料以確保找到目標議案
+          pageSize: 1000 // 獲取大量資料以確保找到目標議案，這裡保持1000是合理的
         }
       })
 
-      // 從議案列表中找到目標議案
-      // 增加對 response?.bills 的安全檢查
       const targetBill = response?.bills?.find(bill => {
         const match = bill.編號.match(/第(\d+)號/)
         return match && match[1] === billNumber
@@ -175,11 +173,6 @@ export const useBills = () => {
       await fetchAllBills()
     }
   }
-
-  // 監聽頁碼變化自動刷新
-  // watch(currentPage, () => {
-  //   refresh()
-  // })
 
   // 格式化日期
   const formatDate = (dateString) => {

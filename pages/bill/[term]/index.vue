@@ -1,6 +1,5 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <!-- 麵包屑導覽 -->
     <nav class="mb-6">
       <ol class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
         <li>
@@ -16,46 +15,38 @@
     </nav>
 
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">第{{ term }}屆議案查詢</h1>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">第{{ term }}屆議案</h1>
       <p class="text-gray-600 dark:text-gray-300">查詢第{{ term }}屆學生議會議案資料</p>
     </div>
 
-    <!-- 錯誤訊息 -->
-    <div v-if="fetchError" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
       <div class="flex items-center">
         <ExclamationTriangleIcon class="h-5 w-5 text-red-500 mr-2" />
-        <p class="text-red-700 dark:text-red-300">{{ fetchError.message || '載入資料時發生錯誤' }}</p>
+        <p class="text-red-700 dark:text-red-300">{{ error.message || '載入資料失敗' }}</p>
       </div>
     </div>
 
-    <!-- 載入中 -->
-    <div v-if="fetchPending" class="flex justify-center items-center py-12">
+    <div v-if="pending" class="flex justify-center items-center py-12">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       <span class="ml-2 text-gray-600 dark:text-gray-300">載入中...</span>
     </div>
 
-    <!-- 篩選器 -->
-    <div v-if="!fetchPending && !fetchError" class="mb-8">
+    <div v-if="!pending && !error" class="mb-8">
       <BillFilter
         :filters="filters"
-        :available-types="availableTypes"
+        :available-terms="[parseInt(route.params.term)]" :available-types="availableTypes"
         :available-agencies="availableAgencies"
-        :hide-term-filter="true"
         @update-filters="updateFilters"
         @reset-filters="resetFilters"
       />
     </div>
 
-    <!-- 議案列表 -->
-    <div v-if="!fetchPending && !fetchError && filteredBills.length > 0" class="space-y-6">
-      <!-- 結果統計 -->
+    <div v-if="!pending && !error && filteredBills.length > 0" class="space-y-6">
       <div class="text-sm text-gray-600 dark:text-gray-400">
-        第{{ term }}屆共有 {{ filteredBills.length }} 筆議案
+        共找到 {{ filteredBills.length }} 筆議案 (總計 {{ totalItems }} 筆)
       </div>
 
-      <!-- 議案卡片 -->
       <div class="grid gap-4">
-        
         <BillCard
           v-for="bill in paginatedBills"
           :key="bill.編號"
@@ -64,36 +55,27 @@
         />
       </div>
 
-      <!-- 分頁 -->
       <Pagination
         :current-page="currentPage"
         :total-pages="totalPages"
-        :total-items="filteredBills.length"
+        :total-items="totalItems"
         @page-change="handlePageChange"
       />
     </div>
 
-    <!-- 無結果 -->
-    <div v-if="!fetchPending && !fetchError && filteredBills.length === 0" class="text-center py-12">
+    <div v-if="!pending && !error && filteredBills.length === 0" class="text-center py-12">
       <DocumentTextIcon class="h-16 w-16 text-gray-400 mx-auto mb-4" />
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">第{{ term }}屆暫無議案資料</h3>
-      <p class="text-gray-600 dark:text-gray-300">請稍後再試或查看其他屆次</p>
-      <div class="mt-4">
-        <NuxtLink
-          to="/bill"
-          class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"
-        >
-          查看所有議案
-        </NuxtLink>
-      </div>
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">找不到相關議案</h3>
+      <p class="text-gray-600 dark:text-gray-300">請調整篩選條件或稍後再試</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { ExclamationTriangleIcon, DocumentTextIcon } from '@heroicons/vue/24/outline'
-import { useBills } from '~/composables/useBills' // 保持匯入 useBills
+import { useBills } from '~/composables/useBills'
 
 // 獲取路由參數
 const route = useRoute()
@@ -113,7 +95,7 @@ useHead({
   meta: [
     {
       name: 'description',
-      content: `查詢本會第${term}屆議案資料`
+      content: `查詢三峽校區學生議會第${term}屆議案資料`
     }
   ]
 })
@@ -121,8 +103,10 @@ useHead({
 // 響應式數據
 const currentPage = ref(1)
 const itemsPerPage = 10
-// 篩選器狀態（不包含屆次，因為已經固定）
+
+// 篩選器狀態 (為特定屆次頁面調整)
 const filters = ref({
+  term: String(term),
   type: '',
   agency: '',
   keyword: '',
@@ -130,73 +114,154 @@ const filters = ref({
   dateTo: ''
 })
 
-// ---------------------- 核心修改部分 ----------------------
-// 透過 useAsyncData 呼叫您的 useBills 來獲取資料
-const { data: billsData, pending: fetchPending, error: fetchError, refresh: fetchRefresh } = useAsyncData(
-  `bills-by-term-${term}`,
-  async () => {
-    const { fetchBillsByTerm } = useBills()
-    return await fetchBillsByTerm(term, {
-      page: currentPage.value,
-      pageSize: itemsPerPage,
-      ...filters.value
-    })
-  },
-  {
-    watch: [currentPage, filters],
-    default: () => ({ bills: [], total: 0, totalPages: 0 })
+// 使用 composable 獲取議案資料
+
+// const { bills, loading: pending, error, refresh, totalItems, totalPages, availableTypes, availableAgencies } = await useBills(filters)
+
+const billsStore = useBills()
+billsStore.updateFilters({ term: String(term) })
+await billsStore.fetchBillsByTerm(term)
+
+const bills = billsStore.bills
+const pending = billsStore.loading
+const error = billsStore.error
+const totalItems = billsStore.totalItems
+const totalPages = billsStore.totalPages
+const availableTypes = billsStore.availableTypes
+const availableAgencies = billsStore.availableAgencies
+
+// 監聽路由參數變化，當屆次改變時重設篩選條件並重新載入
+watch(() => route.params.term, async (newTerm) => {
+    if (newTerm && parseInt(newTerm) !== term) {
+        const newTermParsed = parseInt(newTerm);
+        filters.value.term = String(newTermParsed);
+        currentPage.value = 1;
+        await refresh();
+    }
+}, { immediate: true });
+
+// 輔助函數：將日期時間字串轉換為 YYYY-MM-DD 格式，以便比較
+const formatTimestampToYYYYMMDD = (timestampString) => {
+  if (!timestampString) return null;
+  try {
+    // 替換「下午」為「PM」，「上午」為「AM」
+    const normalizedString = timestampString
+      .replace('下午', 'PM')
+      .replace('上午', 'AM');
+    let date = new Date(normalizedString); // Use let for reassignment
+
+    if (isNaN(date.getTime())) {
+      // 如果直接解析失敗，嘗試手動解析 'YYYY/MM/DD AM/PM HH:mm:ss' 格式
+      const parts = timestampString.match(/(\d{4})\/(\d{1,2})\/(\d{1,2}) (上午|下午) (\d{1,2}):(\d{1,2}):(\d{1,2})/);
+      if (parts) {
+        let year = parseInt(parts[1]);
+        let month = parseInt(parts[2]) - 1; // 月份是從 0 開始
+        let day = parseInt(parts[3]);
+        let hour = parseInt(parts[5]);
+        const ampm = parts[4];
+
+        if (ampm === '下午' && hour < 12) {
+          hour += 12;
+        } else if (ampm === '上午' && hour === 12) { // 處理午夜 12 AM (0點)
+          hour = 0;
+        }
+        date = new Date(year, month, day, hour, 0, 0); // 時、分、秒設為 0
+        if (isNaN(date.getTime())) return null; // Fallback if even manual construction fails
+      } else {
+        return null; // Regex did not match
+      }
+    }
+    return date.toISOString().split('T')[0];
+  } catch (e) {
+    console.error("Error formatting timestamp for comparison:", e);
+    return null;
   }
-)
+};
 
-// 從 billsData 中提取實際的議案列表
-const bills = computed(() => billsData.value?.bills || []);
-// ---------------------- 核心修改部分結束 ----------------------
 
-// 計算可用的篩選選項（僅針對該屆）
-const availableTypes = computed(() => {
-  if (!bills.value) return []
-  return [...new Set(bills.value.map(bill => bill.提案類型))].filter(Boolean).sort()
-})
-
-const availableAgencies = computed(() => {
-  if (!bills.value) return []
-  return [...new Set(bills.value.map(bill => bill['提案機關/議員']))].filter(Boolean).sort()
-})
-
-// 篩選議案 (這個邏輯仍然是基於 bills.value，所以需要確保 bills.value 正確更新)
+// 計算過濾後的議案
 const filteredBills = computed(() => {
-  if (!bills.value) return []
+  if (!Array.isArray(bills.value)) {
+    console.log('Bills value is not an array or is null/undefined:', bills.value);
+    return [];
+  }
 
-  return bills.value.filter(bill => {
+  console.log(`Filtering ${bills.value.length} bills from API.`);
+  console.log('Current filters used for client-side filtering:', filters.value);
+
+  const filtered = bills.value.filter(bill => {
+    // 屆次篩選
+    const billTerm = extractTermFromNumber(bill.編號);
+    const termMatches = (billTerm === term);
+    if (!termMatches) {
+        // console.log(`Bill ${bill.編號}: Term mismatch (Bill term: ${billTerm}, Route term: ${term})`); // 您可以在開發時取消註解此行
+        return false;
+    }
+
     // 類型篩選
-    if (filters.value.type && bill.提案類型 !== filters.value.type) return false
+    const typeMatches = (!filters.value.type || bill.提案類型 === filters.value.type);
+    if (!typeMatches) {
+        // console.log(`Bill ${bill.編號}: Type mismatch (Bill type: ${bill.提案類型}, Filter type: ${filters.value.type})`); // 您可以在開發時取消註解此行
+        return false;
+    }
 
     // 機關篩選
-    if (filters.value.agency && bill['提案機關/議員'] !== filters.value.agency) return false
+    const agencyMatches = (!filters.value.agency || bill['提案機關/議員'] === filters.value.agency);
+    if (!agencyMatches) {
+        // console.log(`Bill ${bill.編號}: Agency mismatch (Bill agency: ${bill['提案機關/議員']}, Filter agency: ${filters.value.agency})`); // 您可以在開發時取消註解此行
+        return false;
+    }
 
     // 關鍵字篩選
-    if (filters.value.keyword) {
-      const keyword = filters.value.keyword.toLowerCase()
-      const searchFields = [bill.案由, bill.說明, bill.辦法, bill.編號].join(' ').toLowerCase()
-      if (!searchFields.includes(keyword)) return false
+    const keywordMatches = (!filters.value.keyword ||
+                            [bill?.案由, bill?.說明, bill?.辦法, bill?.編號]
+                              .filter(Boolean)
+                              .join(' ')
+                              .toLowerCase()
+                              .includes(filters.value.keyword.toLowerCase()));
+    if (!keywordMatches) {
+        // console.log(`Bill ${bill.編號}: Keyword mismatch (Keyword: ${filters.value.keyword})`); // 您可以在開發時取消註解此行
+        return false;
     }
 
     // 日期篩選
-    if (filters.value.dateFrom || filters.value.dateTo) {
-      // 確保 bill.時間戳記 是有效的日期格式
-      const billDate = new Date(bill.時間戳記)
-      if (isNaN(billDate)) return false; // 如果日期無效，則不過濾
-      if (filters.value.dateFrom && billDate < new Date(filters.value.dateFrom)) return false
-      if (filters.value.dateTo && billDate > new Date(filters.value.dateTo)) return false
+    const billDateYYYYMMDD = formatTimestampToYYYYMMDD(bill.時間戳記);
+    const dateParsed = (billDateYYYYMMDD !== null); // 檢查日期解析是否成功
+
+    if (!dateParsed) { // 如果日期解析失敗，則排除此議案
+        // console.log(`Bill ${bill.編號}: Date parsing failed for timestamp "${bill.時間戳記}"`); // 您可以在開發時取消註解此行
+        return false;
     }
 
-    return true
-  }).sort((a, b) => new Date(b.時間戳記) - new Date(a.時間戳記))
+    let dateRangeMatches = true;
+    if (filters.value.dateFrom && billDateYYYYMMDD < filters.value.dateFrom) {
+        dateRangeMatches = false;
+        // console.log(`Bill ${bill.編號}: Date before dateFrom (Bill date: ${billDateYYYYMMDD}, From: ${filters.value.dateFrom})`); // 您可以在開發時取消註解此行
+    }
+    if (filters.value.dateTo && billDateYYYYMMDD > filters.value.dateTo) {
+        dateRangeMatches = false;
+        // console.log(`Bill ${bill.編號}: Date after dateTo (Bill date: ${billDateYYYYMMDD}, To: ${filters.value.dateTo})`); // 您可以在開發時取消註解此行
+    }
+
+    if (!dateRangeMatches) {
+        return false;
+    }
+
+    // console.log(`Bill ${bill.編號}: All filters passed.`); // 您可以在開發時取消註解此行
+    return true;
+  });
+
+  console.log(`After client-side filtering, ${filtered.length} bills remain.`);
+  return filtered.sort((a, b) => {
+    // 排序也使用標準化後的日期進行比較
+    const dateA = formatTimestampToYYYYMMDD(a.時間戳記);
+    const dateB = formatTimestampToYYYYMMDD(b.時間戳記);
+    if (!dateA || !dateB) return 0; // 無法解析的日期不影響排序
+    return dateB.localeCompare(dateA); // 降序排序 (最近的在前)
+  })
 })
 
-// 分頁計算
-const totalPages = computed(() => Math.ceil(filteredBills.value.length / itemsPerPage))
-
+// 分頁計算 (僅限前端顯示)
 const paginatedBills = computed(() => {
   const start = (currentPage.value - 1) * itemsPerPage
   const end = start + itemsPerPage
@@ -205,47 +270,53 @@ const paginatedBills = computed(() => {
 
 // 方法
 const updateFilters = (newFilters) => {
-  filters.value = { ...filters.value, ...newFilters }
-  currentPage.value = 1 // 重置到第一頁
-  // fetchRefresh() // 由於 useAsyncData 有 watch，這裡不需要手動呼叫 refresh
+  filters.value = { ...filters.value, ...newFilters, term: String(term) };
+  currentPage.value = 1;
 }
 
 const resetFilters = () => {
   filters.value = {
+    term: String(term),
     type: '',
     agency: '',
     keyword: '',
     dateFrom: '',
     dateTo: ''
   }
-  currentPage.value = 1 // 重置到第一頁
-  // fetchRefresh() // 由於 useAsyncData 有 watch，這裡不需要手動呼叫 refresh
+  currentPage.value = 1
 }
 
 const handlePageChange = (page) => {
   currentPage.value = page
-  // 滾動到頂部
+  
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const navigateToBill = (bill) => {
+  const term = extractTermFromNumber(bill.編號)
   const number = extractNumberFromNumber(bill.編號)
-  if (number) {
+  if (term && number) {
     navigateTo(`/bill/${term}/${number}`)
   }
 }
 
-// 輔助函數
+// 輔助函數 (保持不變)
+const extractTermFromNumber = (billNumber) => {
+  if (typeof billNumber !== 'string') return null;
+  const match = billNumber.match(/^(\d+)屆/)
+  return match ? parseInt(match[1]) : null
+}
+
 const extractNumberFromNumber = (billNumber) => {
+  if (typeof billNumber !== 'string') return null;
   const match = billNumber.match(/第(\d+)號$/)
   return match ? parseInt(match[1]) : null
 }
 
-// 由於 useAsyncData 已經監聽了 currentPage 和 filters，
-// 這裡不需要額外的 watch 監聽 filters 來觸發 refresh。
-// watch(filters, () => {
-//   currentPage.value = 1
-// }, { deep: true })
+// 監聽前端頁碼變化，僅用於控制 paginatedBills，不觸發 API 請求
+watch(currentPage, () => {
+  // 當前頁碼改變時，不需要重新獲取數據，因為數據已經在 bills.value 中
+});
 </script>
 
 <style scoped>
