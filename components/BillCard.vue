@@ -11,12 +11,17 @@
         {{ bill.提案類型 }}
       </span>
       <span class="text-xs text-gray-500 dark:text-gray-400">
-        {{ formatDate(bill.時間戳記) }}
+        {{ bill.時間戳記 }}
       </span>
     </div>
     <div class="text-sm text-gray-700 dark:text-gray-300">
-      <p><strong>提案機關/議員：</strong>{{ bill['提案機關/議員'] }}</p>
-      <p><strong>提案人：</strong>{{ bill['提案機關主管/提案議員姓名'] }}</p>
+<p v-if="bill['提案機關/議員'] === '本會議員'">
+  <strong>提案機關/議員：</strong>{{ bill['提案機關/議員'] }}：{{ bill['提案機關主管/提案議員姓名'] }}
+</p>
+<p v-else>
+  <strong>提案機關/議員：</strong>{{ bill['提案機關/議員'] }}
+</p>
+
     </div>
   </div>
 </template>
