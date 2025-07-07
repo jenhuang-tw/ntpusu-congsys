@@ -57,7 +57,7 @@
       />
     </div>
 
-    <!-- 無結果 -->
+    <!-- 倘若無結果 -->
     <div v-if="!pending && !error && filteredBills.length === 0" class="text-center py-12">
       <DocumentTextIcon class="h-16 w-16 text-gray-400 mx-auto mb-4" />
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">找不到相關議案</h3>
@@ -92,14 +92,18 @@ const filters = ref({
 })
 
 // 使用 composable 獲取議案資料
-const { data: bills, pending, error, refresh } = await useBills()
+const { bills, loading: pending, error, refresh } = await useBills()
+
+// 調用 refresh() ，首次獲取資料
+await refresh()
 
 // 計算可用的篩選選項
 const availableTerms = computed(() => {
+  // Use optional chaining or a more explicit check for bills.value
   if (!bills.value) return []
-  const terms = [...new Set(bills.value.map(bill => extractTermFromNumber(bill.編號)))]
-  return terms.filter(Boolean).sort((a, b) => b - a)
-})
+  const terms = [...new Set(bills.value.map(bill => extractTermFromNumber(bill.編號)))];
+  return terms.filter(Boolean).sort((a, b) => b - a);
+});
 
 const availableTypes = computed(() => {
   if (!bills.value) return []
@@ -131,13 +135,21 @@ const filteredBills = computed(() => {
     // 關鍵字篩選
     if (filters.value.keyword) {
       const keyword = filters.value.keyword.toLowerCase()
-      const searchFields = [bill.案由, bill.說明, bill.辦法, bill.編號].join(' ').toLowerCase()
+      // Ensure bill properties are accessed safely
+      const searchFields = [bill.案由, bill.說明, bill.辦法, bill.編號]
+                                .filter(Boolean) // Filter out any null/undefined fields
+                                .join(' ')
+                                .toLowerCase()
       if (!searchFields.includes(keyword)) return false
     }
 
     // 日期篩選
     if (filters.value.dateFrom || filters.value.dateTo) {
+      // Ensure bill.時間戳記 exists and is valid before creating a Date object
+      if (!bill.時間戳記) return false; 
       const billDate = new Date(bill.時間戳記)
+      if (isNaN(billDate.getTime())) return false; // Check for invalid date
+
       if (filters.value.dateFrom && billDate < new Date(filters.value.dateFrom)) return false
       if (filters.value.dateTo && billDate > new Date(filters.value.dateTo)) return false
     }
@@ -189,11 +201,13 @@ const navigateToBill = (bill) => {
 
 // 輔助函數
 const extractTermFromNumber = (billNumber) => {
+  if (typeof billNumber !== 'string') return null; // Ensure billNumber is a string
   const match = billNumber.match(/^(\d+)屆/)
   return match ? parseInt(match[1]) : null
 }
 
 const extractNumberFromNumber = (billNumber) => {
+  if (typeof billNumber !== 'string') return null; // Ensure billNumber is a string
   const match = billNumber.match(/第(\d+)號$/)
   return match ? parseInt(match[1]) : null
 }
