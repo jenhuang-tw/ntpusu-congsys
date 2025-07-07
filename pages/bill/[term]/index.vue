@@ -140,15 +140,15 @@ watch(() => route.params.term, async (newTerm) => {
     }
 }, { immediate: true });
 
-// 輔助函數：將日期時間字串轉換為 YYYY-MM-DD 格式，以便比較
-const formatTimestampToYYYYMMDD = (timestampString) => {
+// 輔助函數：將日期時間字串轉換為 ISO 格式 (YYYY-MM-DDTHH:mm:ss)
+const formatTimestampToISO = (timestampString) => {
   if (!timestampString) return null;
   try {
     // 替換「下午」為「PM」，「上午」為「AM」
     const normalizedString = timestampString
       .replace('下午', 'PM')
       .replace('上午', 'AM');
-    let date = new Date(normalizedString); // Use let for reassignment
+    let date = new Date(normalizedString);
 
     if (isNaN(date.getTime())) {
       // 如果直接解析失敗，嘗試手動解析 'YYYY/MM/DD AM/PM HH:mm:ss' 格式
@@ -158,20 +158,23 @@ const formatTimestampToYYYYMMDD = (timestampString) => {
         let month = parseInt(parts[2]) - 1; // 月份是從 0 開始
         let day = parseInt(parts[3]);
         let hour = parseInt(parts[5]);
+        let minute = parseInt(parts[6]);
+        let second = parseInt(parts[7]);
         const ampm = parts[4];
 
         if (ampm === '下午' && hour < 12) {
           hour += 12;
-        } else if (ampm === '上午' && hour === 12) { // 處理午夜 12 AM (0點)
+        } else if (ampm === '上午' && hour === 12) {
           hour = 0;
         }
-        date = new Date(year, month, day, hour, 0, 0); // 時、分、秒設為 0
-        if (isNaN(date.getTime())) return null; // Fallback if even manual construction fails
+        date = new Date(year, month, day, hour, minute, second);
+        if (isNaN(date.getTime())) return null;
       } else {
-        return null; // Regex did not match
+        return null;
       }
     }
-    return date.toISOString().split('T')[0];
+    // 回傳完整 ISO 字串 (不帶時區)
+    return date.toISOString().replace('Z', '');
   } catch (e) {
     console.error("Error formatting timestamp for comparison:", e);
     return null;
@@ -225,26 +228,23 @@ const filteredBills = computed(() => {
     }
 
     // 日期篩選
-    const billDateYYYYMMDD = formatTimestampToYYYYMMDD(bill.時間戳記);
-    const dateParsed = (billDateYYYYMMDD !== null); // 檢查日期解析是否成功
+    const billDateISO = formatTimestampToISO(bill.時間戳記);
+    const dateParsed = (billDateISO !== null); // 檢查日期解析是否成功
 
-    if (!dateParsed) { // 如果日期解析失敗，則排除此議案
-        // console.log(`Bill ${bill.編號}: Date parsing failed for timestamp "${bill.時間戳記}"`); // 您可以在開發時取消註解此行
-        return false;
+    if (!dateParsed) { // 倘若日期解析失敗，則排除此議案
+      return false;
     }
 
     let dateRangeMatches = true;
-    if (filters.value.dateFrom && billDateYYYYMMDD < filters.value.dateFrom) {
-        dateRangeMatches = false;
-        // console.log(`Bill ${bill.編號}: Date before dateFrom (Bill date: ${billDateYYYYMMDD}, From: ${filters.value.dateFrom})`); // 您可以在開發時取消註解此行
+    if (filters.value.dateFrom && billDateISO < filters.value.dateFrom) {
+      dateRangeMatches = false;
     }
-    if (filters.value.dateTo && billDateYYYYMMDD > filters.value.dateTo) {
-        dateRangeMatches = false;
-        // console.log(`Bill ${bill.編號}: Date after dateTo (Bill date: ${billDateYYYYMMDD}, To: ${filters.value.dateTo})`); // 您可以在開發時取消註解此行
+    if (filters.value.dateTo && billDateISO > filters.value.dateTo) {
+      dateRangeMatches = false;
     }
 
     if (!dateRangeMatches) {
-        return false;
+      return false;
     }
 
     // console.log(`Bill ${bill.編號}: All filters passed.`); // 您可以在開發時取消註解此行
@@ -253,11 +253,11 @@ const filteredBills = computed(() => {
 
   console.log(`After client-side filtering, ${filtered.length} bills remain.`);
   return filtered.sort((a, b) => {
-    // 排序也使用標準化後的日期進行比較
-    const dateA = formatTimestampToYYYYMMDD(a.時間戳記);
-    const dateB = formatTimestampToYYYYMMDD(b.時間戳記);
-    if (!dateA || !dateB) return 0; // 無法解析的日期不影響排序
-    return dateB.localeCompare(dateA); // 降序排序 (最近的在前)
+    // 排序用完整 ISO 字串比較，精確到時分秒
+    const dateA = formatTimestampToISO(a.時間戳記);
+    const dateB = formatTimestampToISO(b.時間戳記);
+    if (!dateA || !dateB) return 0;
+    return dateB.localeCompare(dateA); // 降序排序
   })
 })
 
@@ -300,7 +300,7 @@ const navigateToBill = (bill) => {
   }
 }
 
-// 輔助函數 (保持不變)
+// 輔助函數
 const extractTermFromNumber = (billNumber) => {
   if (typeof billNumber !== 'string') return null;
   const match = billNumber.match(/^(\d+)屆/)
