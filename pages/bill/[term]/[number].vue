@@ -69,7 +69,7 @@
                     </div>
                   </div>
                   <div v-else-if="field.key === '提案時間'" class="font-mono">
-                    {{ formatDate(bill[field.originalKey]) }}
+                    {{ formatTimestamp(bill[field.originalKey]) }}
                   </div>
                   <div v-else-if="field.isMultiline" class="whitespace-pre-wrap">
                     {{ bill[field.originalKey] || '無' }}
@@ -199,51 +199,106 @@ useHead(() => ({
 // 定義顯示欄位
 const displayFields = computed(() => [
   { label: '編號', key: '編號', originalKey: '編號' },
-  { label: '提案時間', key: '提案時間', originalKey: '時間戳記' },
+  { label: '提案時間', key: '提案時間', originalKey: '時間戳記' }, // Keep originalKey for direct access
   { label: '提案機關/議員', key: '提案機關/議員', originalKey: '提案機關/議員' },
   { label: '機關主管/\n議員姓名', key: '提案機關主管/提案議員姓名', originalKey: '提案機關主管/提案議員姓名' },
-  { label: '聯絡人', key: '提案聯絡人姓名', originalKey: '提案聯絡人姓名' },
+  { label: '聯絡人', key: '提案聯絡人姓名', originalKey: '提案聯絡人姓名 ' },
+  //{ label: '提案聯絡人公務電子郵件', key: '提案聯絡人公務電子郵件', originalKey: '提案聯絡人公務電子郵件' }, // Add this field
   { label: '類型', key: '提案類型', originalKey: '提案類型' },
   { label: '案由', key: '案由', originalKey: '案由', isMultiline: true },
   { label: '說明', key: '說明', originalKey: '說明', isMultiline: true },
   { label: '辦法', key: '辦法', originalKey: '辦法', isMultiline: true },
-  { label: '附件', key: 'attachments', originalKey: 'attachments' }
+  { label: '附件', key: 'attachments', originalKey: 'attachments' } // This will now be a "virtual" field
 ])
 
-// 方法
-const formatDate = (dateString) => {
-  if (!dateString) return '無'
+// New function to format timestamp strings more robustly
+const formatTimestamp = (timestampString) => {
+  if (!timestampString) return '無';
   try {
-    const date = new Date(dateString)
+    // Replace '下午' with 'PM' and '上午' with 'AM' for better Date parsing
+    const normalizedString = timestampString
+      .replace('下午', 'PM')
+      .replace('上午', 'AM');
+
+    const date = new Date(normalizedString);
+
+    // Check if the date is valid after parsing
+    if (isNaN(date.getTime())) {
+      // Fallback for tricky formats, try to manually parse
+      const parts = timestampString.match(/(\d{4})\/(\d{1,2})\/(\d{1,2}) (上午|下午) (\d{1,2}):(\d{1,2}):(\d{1,2})/);
+      if (parts) {
+        let year = parseInt(parts[1]);
+        let month = parseInt(parts[2]) - 1; // Month is 0-indexed
+        let day = parseInt(parts[3]);
+        let hour = parseInt(parts[5]);
+        let minute = parseInt(parts[6]);
+        const ampm = parts[4];
+
+        if (ampm === '下午' && hour < 12) {
+          hour += 12;
+        } else if (ampm === '上午' && hour === 12) { // Midnight (12 AM)
+          hour = 0;
+        }
+        const parsedDate = new Date(year, month, day, hour, minute);
+        return parsedDate.toLocaleString('zh-TW', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+      return timestampString; // Return original if parsing fails
+    }
+
     return date.toLocaleString('zh-TW', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
       hour: '2-digit',
-      minute: '2-digit'
-    })
+      minute: '2-digit',
+      // hour12: true // Ensure AM/PM is correctly rendered based on locale
+    });
   } catch (e) {
-    return dateString
+    console.error("Error formatting date:", e);
+    return timestampString; // Fallback to original string on error
   }
 }
 
-// 獲取附件的函數
+// Updated getAttachments function to handle multiple '附件' columns
 const getAttachments = (billData) => {
-  if (!billData || !billData.附件) return [];
-  try {
-    return billData.附件.split(';').map(item => {
-      const parts = item.split(':');
-      if (parts.length >= 2) {
-        const url = parts.slice(1).join(':');
-        return { name: parts[0], url: url.startsWith('http') ? url : `https://${url}` };
+  if (!billData) return [];
+  const attachments = [];
+  let i = 1;
+  while (billData[`附件${i}`]) {
+    const attachmentString = billData[`附件${i}`];
+    // Assuming the format is just a URL for simplicity based on provided data
+    // If you have 'name:url' in separate '附件X' fields, adjust accordingly
+    if (attachmentString.trim()) {
+      // Attempt to extract name from URL if no explicit name is given, or use a default
+      const url = attachmentString.startsWith('http') ? attachmentString : `https://${attachmentString}`;
+      let name = `附件 ${i}`; // Default name
+      try {
+        const urlObj = new URL(url);
+        const pathParts = urlObj.pathname.split('/');
+        const fileName = pathParts[pathParts.length - 1];
+        if (fileName && fileName !== 'open') { // Avoid naming "open"
+            name = decodeURIComponent(fileName);
+        } else { // Try to get a more descriptive name if possible (e.g., from the example data)
+            // For Google Drive 'open' links, the actual file name isn't in the URL easily.
+            // We'll stick to a generic name or require a 'name:url' format from the sheet.
+            name = `附件 ${i} (文件)`;
+        }
+      } catch (e) {
+          // If URL parsing fails, stick with default name
       }
-      return { name: item, url: null };
-    }).filter(attachment => attachment.name);
-  } catch (e) {
-    console.error("Error parsing attachments:", e);
-    return [];
+      attachments.push({ name: name, url: url });
+    }
+    i++;
   }
+  return attachments;
 };
+
 
 // 複製連結功能
 const copyUrl = () => {
