@@ -18,7 +18,7 @@
 * **樣式**：Tailwind CSS
 * **API 串接**：Google Sheets API (透過 `googleapis` 函式庫)
 * **圖標**：Heroicons
-* **部署**：Vercel
+* **部署**：Cloudflare Pages
 * **版本控制**：Git / GitHub
 
 本專案使用 Claude.ai, ChatGPT, Gemini 等服務生成，再由開發者微調。
@@ -34,8 +34,8 @@
 * **首頁**：以區塊形式呈現主要服務連結。
 * **頭部導覽列**：包含網站標題與導覽選單，並提供夜間模式切換按鈕。
 * **議案查詢頁面 (`/bill`)**：
-    * 顯示所有議案的列表。
-    * 提供多種篩選條件（例如：屆次、提案類型、提案機關/議員、案由等）。
+    * 顯示某屆所有議案的列表。
+    * 提供多種篩選條件（例如：提案類型、提案機關/議員、案由等）。
     * 支援日期範圍篩選與分頁功能。
     * 議案詳細頁面 (`/bill/:term/:number`)：顯示單一議案的完整資訊與附件連結。
 * **底部頁腳**：顯示單位名稱及 GitHub Repository 連結。
@@ -95,7 +95,7 @@
 
 ## 部署
 
-本專案建議使用 [Vercel](https://vercel.com/) 進行部署。
+本專案建議使用 Cloudflare Pages 進行部署。
 
 ### 部署步驟
 
@@ -110,15 +110,15 @@
     git push -u origin main
     ```
 
-2.  **Vercel 部署**：
-    1.  前往 [Vercel](https://vercel.com/) 並登入。
-    2.  選擇「New Project」，然後連接您的 GitHub 帳戶並匯入本專案的 Repository。
-    3.  在專案設定步驟中，找到「Environment Variables」區塊。
-    4.  將 `.env` 檔案中的 `GOOGLE_SERVICE_ACCOUNT_EMAIL`、`GOOGLE_PRIVATE_KEY` 和 `GOOGLE_SHEETS_ID` 這三個變數及其值加入到 Vercel 的環境變數中。**請確保 `GOOGLE_PRIVATE_KEY` 在 Vercel 中是單行完整且包含所有換行符號的字串。**
-    5.  點擊「Deploy」。
+2.  **Cloudflare Pages 部署**：
+    1.  前往 Cloudflare 並登入。
+    2.  連接您的 GitHub 帳戶並匯入本專案的 Repository。
+    3.  在專案設定步驟中，找到「環境變數 (進階)」區塊。
+    4.  將 `.env` 檔案中的 `GOOGLE_SERVICE_ACCOUNT_EMAIL`、`GOOGLE_PRIVATE_KEY` 和 `GOOGLE_SHEETS_ID` 這三個變數及其值加入到 Cloudflare Pages 的環境變數中。**請確保 `GOOGLE_PRIVATE_KEY` 在 Cloudflare Pages 中是單行完整且包含所有換行符號的字串。**
+    5.  點擊「儲存並部署」。
 
 3.  **自定義域名設定**：
-    部署完成後，您可以在 Vercel 專案設定中，前往「Domains」區塊，新增您的自定義域名 `sxcong.ntpusu.org`，並依照 Vercel 提供的指示設定 DNS 記錄。
+    部署完成後，您可以在 Cloudflare Pages 專案設定中，前往「Domains」區塊，新增自定義域名（例如 `sxcong.ntpusu.org`）並依照 Cloudflare Pages 提供的指示設定 DNS 記錄。
 
 ## 貢獻
 
