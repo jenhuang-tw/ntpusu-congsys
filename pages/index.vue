@@ -3,10 +3,10 @@
     <!-- 主標題區塊 -->
     <div class="text-center mb-12">
       <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-        三峽校區議事服務
+        {{SITE_CONFIG.name}}
       </h1>
       <p class="text-xl text-gray-600 dark:text-gray-400">
-        國立臺北大學學生自治會 三峽校區學生議會
+        {{SITE_CONFIG.fullName}}
       </p>
     </div>
 
@@ -158,7 +158,7 @@
             本系統開源，歡迎貢獻。
           </p>
           <a 
-            :href="config.public.githubRepoUrl" 
+            :href="SITE_CONFIG.githubRepo" 
             target="_blank" 
             rel="noopener noreferrer"
             class="btn btn-secondary"
