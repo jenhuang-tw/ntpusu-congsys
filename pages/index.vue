@@ -127,7 +127,7 @@
             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">學生議會</h2>
           </div>
           <p class="text-gray-600 dark:text-gray-400 mb-4">
-            回到學生議會主要網站，瀏覽更多資訊和服務。
+            回到學生自治會網站，瀏覽更多資訊和服務。
           </p>
           <a 
             :href="config.public.congressWebsiteUrl" 
