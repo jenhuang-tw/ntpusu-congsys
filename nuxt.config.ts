@@ -1,6 +1,8 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-05-15',
-  devtools: { enabled: true },
+  devtools: {
+    enabled: process.env.NODE_ENV === 'development'
+  },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode'
@@ -26,7 +28,7 @@ export default defineNuxtConfig({
   },
   ssr: true, // 確保開啟 SSR
   nitro: {
-    preset: 'cloudflare-pages'
+    preset: 'netlify'
   },
   app: {
     head: {
