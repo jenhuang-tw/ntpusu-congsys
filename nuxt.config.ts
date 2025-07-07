@@ -23,12 +23,12 @@ export default defineNuxtConfig({
     googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     public: {
       baseUrl: process.env.BASE_URL || 'https://sxcong.ntpusu.org',
-      proposalFormUrl: process.env.PROPOSAL_FORM_URL,
-      meetingRecordsUrl: process.env.MEETING_RECORDS_URL,
-      congressWebsiteUrl: process.env.CONGRESS_WEBSITE_URL,
-      inviteSystemUrl: process.env.INVITE_SYSTEM_URL,
-      budgetSystemUrl: process.env.BUDGET_SYSTEM_URL,
-      githubRepoUrl: process.env.GITHUB_REPO_URL
+      proposalFormUrl: process.env.PROPOSAL_FORM_URL || '',
+      meetingRecordsUrl: process.env.MEETING_RECORDS_URL || '',
+      congressWebsiteUrl: process.env.CONGRESS_WEBSITE_URL || '',
+      inviteSystemUrl: process.env.INVITE_SYSTEM_URL || '',
+      budgetSystemUrl: process.env.BUDGET_SYSTEM_URL || '',
+      githubRepoUrl: process.env.GITHUB_REPO_URL || ''
     }
   },
   nitro: {
