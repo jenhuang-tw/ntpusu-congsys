@@ -16,10 +16,12 @@
     </div>
     <div class="text-sm text-gray-700 dark:text-gray-300">
 <p v-if="bill['提案機關/議員'] === '本會議員'">
-  <strong>提案機關/議員：</strong>{{ bill['提案機關/議員'] }}：{{ bill['提案機關主管/提案議員姓名'] }}
+  <strong>提案者：</strong>本會{{ bill['提案機關主管/提案議員姓名'] }}議員
+</p><p v-else-if="bill['提案機關/議員'] === '本會議長'">
+  <strong>提案者：</strong>本會{{ bill['提案機關主管/提案議員姓名'] }}議長
 </p>
 <p v-else>
-  <strong>提案機關/議員：</strong>{{ bill['提案機關/議員'] }}
+  <strong>提案者：</strong>{{ bill['提案機關/議員'] }}
 </p>
 
     </div>
