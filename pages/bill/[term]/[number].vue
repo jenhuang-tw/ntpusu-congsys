@@ -73,7 +73,7 @@
                           :href="attachment.url"
                           target="_blank"
                           rel="noopener noreferrer"
-                          class="inline-flex items-center text-primary hover:text-primary-600 hover:underline"
+                          class="inline-flex items-center text-primary hover:text-primary-600 dark: text-primary-400 dark:hover:text-white hover:underline"
                         >
                           <DocumentIcon class="h-4 w-4 mr-1" />
                           {{ attachment.name }}
