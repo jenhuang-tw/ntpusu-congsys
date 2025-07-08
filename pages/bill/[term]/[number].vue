@@ -319,7 +319,7 @@ const getAttachments = (billData) => {
 
       const url = attachmentString.startsWith('http') ? attachmentString : `https://${attachmentString}`;
 
-      if (url.startsWith('https://drive.google.com/')) {
+      if ( url.startsWith('https://drive.google.com/') || url.startsWith('https://docs.google.com/') ) {
         // For Google Drive links
         name = `附件 ${i} (Google Drive 連結)`;
       }
