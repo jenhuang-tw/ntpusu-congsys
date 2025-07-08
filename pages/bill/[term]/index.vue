@@ -14,60 +14,79 @@
       </ol>
     </nav>
 
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">第{{ term }}屆議案</h1>
-      <p class="text-gray-600 dark:text-gray-300">查詢第{{ term }}屆學生議會議案資料</p>
-    </div>
-
-    <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-      <div class="flex items-center">
-        <ExclamationTriangleIcon class="h-5 w-5 text-red-500 mr-2" />
-        <p class="text-red-700 dark:text-red-300">{{ error.message || '載入資料失敗' }}</p>
+    <div v-if="isOutOfRange" class="text-center text-red-500 font-bold my-12">
+      僅有第 {{ STARTING_TERM }} ~ {{ currentTerm }} 屆資料
+      <div class="mt-8 flex justify-center gap-4">
+        <NuxtLink
+          to="/bill"
+          class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium transition-colors"
+        >
+          各屆議案
+        </NuxtLink>
+        <NuxtLink
+          to="/"
+          class="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-medium transition-colors"
+        >
+          回到首頁
+        </NuxtLink>
       </div>
     </div>
-
-    <div v-if="pending" class="flex justify-center items-center py-12">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      <span class="ml-2 text-gray-600 dark:text-gray-300">載入中...</span>
-    </div>
-
-    <div v-if="!pending && !error" class="mb-8">
-      <BillFilter
-        :filters="filters"
-        :available-terms="[parseInt(route.params.term)]" :available-types="availableTypes"
-        :available-agencies="availableAgencies"
-        @update-filters="updateFilters"
-        @reset-filters="resetFilters"
-      />
-    </div>
-
-    <div v-if="!pending && !error && filteredBills.length > 0" class="space-y-6">
-      <div class="text-sm text-gray-600 dark:text-gray-400">
-        共找到 {{ filteredBills.length }} 筆議案 (總計 {{ totalItems }} 筆)
+    <template v-else>
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">第{{ term }}屆議案</h1>
+        <p class="text-gray-600 dark:text-gray-300">查詢第{{ term }}屆學生議會議案資料</p>
       </div>
 
-      <div class="grid gap-4">
-        <BillCard
-          v-for="bill in paginatedBills"
-          :key="bill.編號"
-          :bill="bill"
-          @click="navigateToBill(bill)"
+      <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+        <div class="flex items-center">
+          <ExclamationTriangleIcon class="h-5 w-5 text-red-500 mr-2" />
+          <p class="text-red-700 dark:text-red-300">{{ error.message || '載入資料失敗' }}</p>
+        </div>
+      </div>
+
+      <div v-if="pending" class="flex justify-center items-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-2 text-gray-600 dark:text-gray-300">載入中...</span>
+      </div>
+
+      <div v-if="!pending && !error" class="mb-8">
+        <BillFilter
+          :filters="filters"
+          :available-terms="[parseInt(route.params.term)]" :available-types="availableTypes"
+          :available-agencies="availableAgencies"
+          @update-filters="updateFilters"
+          @reset-filters="resetFilters"
         />
       </div>
 
-      <Pagination
-        :current-page="currentPage"
-        :total-pages="totalPages"
-        :total-items="totalItems"
-        @page-change="handlePageChange"
-      />
-    </div>
+      <div v-if="!pending && !error && filteredBills.length > 0" class="space-y-6">
+        <div class="text-sm text-gray-600 dark:text-gray-400">
+          共找到 {{ filteredBills.length }} 筆議案 (總計 {{ totalItems }} 筆)
+        </div>
 
-    <div v-if="!pending && !error && filteredBills.length === 0" class="text-center py-12">
-      <DocumentTextIcon class="h-16 w-16 text-gray-400 mx-auto mb-4" />
-      <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">找不到相關議案</h3>
-      <p class="text-gray-600 dark:text-gray-300">請調整篩選條件或稍後再試</p>
-    </div>
+        <div class="grid gap-4">
+          <BillCard
+            v-for="bill in paginatedBills"
+            :key="bill.編號"
+            :bill="bill"
+            @click="navigateToBill(bill)"
+          />
+        </div>
+
+        <Pagination
+          :current-page="currentPage"
+          :total-pages="totalPages"
+          :total-items="totalItems"
+          @page-change="handlePageChange"
+        />
+      </div>
+
+      <div v-if="!pending && !error && filteredBills.length === 0" class="text-center py-12">
+        <DocumentTextIcon class="h-16 w-16 text-gray-400 mx-auto mb-4" />
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">找不到相關議案</h3>
+        <p class="text-gray-600 dark:text-gray-300">請調整篩選條件或稍後再試</p>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -76,10 +95,38 @@ import { ref, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ExclamationTriangleIcon, DocumentTextIcon } from '@heroicons/vue/24/outline'
 import { useBills } from '~/composables/useBills'
+import { useCurrentTerm } from '~/composables/useCurrentTerm'
 
-// 獲取路由參數
+// 取得屆次範圍
+const { currentTerm, availableTermsRange } = useCurrentTerm()
+const STARTING_TERM = 23
+
 const route = useRoute()
 const term = parseInt(route.params.term)
+
+// 判斷是否超出屆次範圍
+const isOutOfRange = computed(() => {
+  return isNaN(term) || term < STARTING_TERM || term > currentTerm.value
+})
+
+// 只有在合法屆次才查詢資料
+let billsStore, bills, pending, error, totalItems, totalPages, availableTypes, availableAgencies
+if (!isOutOfRange.value) {
+  billsStore = useBills()
+  billsStore.updateFilters({ term: String(term) })
+  await billsStore.fetchBillsByTerm(term)
+  bills = billsStore.bills
+  pending = billsStore.loading
+  error = billsStore.error
+  totalItems = billsStore.totalItems
+  totalPages = billsStore.totalPages
+  availableTypes = billsStore.availableTypes
+  availableAgencies = billsStore.availableAgencies
+}
+
+// 獲取路由參數
+// const route = useRoute()
+// const term = parseInt(route.params.term)
 
 // 驗證屆次參數
 if (!term || isNaN(term)) {
@@ -118,17 +165,17 @@ const filters = ref({
 
 // const { bills, loading: pending, error, refresh, totalItems, totalPages, availableTypes, availableAgencies } = await useBills(filters)
 
-const billsStore = useBills()
-billsStore.updateFilters({ term: String(term) })
-await billsStore.fetchBillsByTerm(term)
+// const billsStore = useBills()
+// billsStore.updateFilters({ term: String(term) })
+// await billsStore.fetchBillsByTerm(term)
 
-const bills = billsStore.bills
-const pending = billsStore.loading
-const error = billsStore.error
-const totalItems = billsStore.totalItems
-const totalPages = billsStore.totalPages
-const availableTypes = billsStore.availableTypes
-const availableAgencies = billsStore.availableAgencies
+// const bills = billsStore.bills
+// const pending = billsStore.loading
+// const error = billsStore.error
+// const totalItems = billsStore.totalItems
+// const totalPages = billsStore.totalPages
+// const availableTypes = billsStore.availableTypes
+// const availableAgencies = billsStore.availableAgencies
 
 // 監聽路由參數變化，當屆次改變時重設篩選條件並重新載入
 watch(() => route.params.term, async (newTerm) => {
@@ -197,14 +244,12 @@ const filteredBills = computed(() => {
     const billTerm = extractTermFromNumber(bill.編號);
     const termMatches = (billTerm === term);
     if (!termMatches) {
-        // console.log(`Bill ${bill.編號}: Term mismatch (Bill term: ${billTerm}, Route term: ${term})`); // 您可以在開發時取消註解此行
         return false;
     }
 
     // 類型篩選
     const typeMatches = (!filters.value.type || bill.提案類型 === filters.value.type);
     if (!typeMatches) {
-        // console.log(`Bill ${bill.編號}: Type mismatch (Bill type: ${bill.提案類型}, Filter type: ${filters.value.type})`); // 您可以在開發時取消註解此行
         return false;
     }
 
