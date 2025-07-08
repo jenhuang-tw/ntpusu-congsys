@@ -45,12 +45,8 @@ definePageMeta({
 // 使用新的 Composables 獲取當前屆次和屆次範圍
 const { currentTerm, availableTermsRange } = useCurrentTerm()
 
-// 從 useCurrentTerm 中獲取起始屆次，用於頁面底部顯示
-const STARTING_TERM = 23; // 這裡直接寫死或者從 useCurrentTerm 導出
-
-// 如果需要在模板中直接使用 STARTING_TERM，確保它可用
-// 如果 useCurrentTerm 只導出 computed，可能需要在這裡定義
-// const STARTING_TERM = 23; // 根據 useCurrentTerm 的內部定義
+// 設定起始屆次
+const STARTING_TERM = 23;
 
 </script>
 
