@@ -5,10 +5,10 @@
         <!-- 組織資訊 -->
         <div class="text-center md:text-left">
           <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-1">
-            國立臺北大學學生自治會 三峽校區學生議會
+            {{ SITE_CONFIG.fullName }}
           </h3>
           <p class="text-gray-600 dark:text-gray-400">
-            Sanxia Campus Student Congress, NTPUSU
+            {{ SITE_CONFIG.englishName }}
           </p>
         </div>
 
@@ -16,7 +16,7 @@
         <div class="flex flex-col items-center md:items-end space-y-2">
           <div class="flex items-center space-x-4">
             <a 
-              :href="config.public.githubRepoUrl" 
+              :href="SITE_CONFIG.githubRepo" 
               target="_blank" 
               rel="noopener noreferrer"
               class="inline-flex items-center space-x-2 text-gray-600 dark:text-gray-400 hover:text-primary dark:hover:text-primary-400 transition-colors"
@@ -37,6 +37,5 @@
 </template>
 
 <script setup>
-const config = useRuntimeConfig()
 const currentYear = new Date().getFullYear()
 </script>
