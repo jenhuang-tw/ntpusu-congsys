@@ -6,7 +6,7 @@
         <!-- 頁面標題 -->
         <div class="text-center mb-12">
           <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            其他服務
+            議事專區
           </h1>
           <p class="text-lg text-gray-600 dark:text-gray-300">
             提案相關表單範本與系統服務
@@ -129,6 +129,30 @@
             </button>
           </div>
 
+          <!-- 議事規則查詢 -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-orange-600">
+            <div class="flex items-center mb-4">
+              <svg class="w-8 h-8 text-orange-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                議事規則查詢
+              </h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              查詢議事規則、組織規程等相關法規
+            </p>
+            <button 
+              class="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
+              @click="handleServiceClick('議事規則查詢')"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              查詢規則
+            </button>
+          </div>
+
           <!-- 預算變更系統 -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-purple-600">
             <div class="flex items-center mb-4">
@@ -175,82 +199,6 @@
               </svg>
               前往系統
             </button>
-          </div>
-
-          <!-- 議事規則查詢 -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-orange-600">
-            <div class="flex items-center mb-4">
-              <svg class="w-8 h-8 text-orange-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                議事規則查詢
-              </h3>
-            </div>
-            <p class="text-gray-600 dark:text-gray-300 mb-6">
-              查詢議事規則、組織規程等相關法規
-            </p>
-            <button 
-              class="w-full bg-orange-600 hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
-              @click="handleServiceClick('議事規則查詢')"
-            >
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              查詢規則
-            </button>
-          </div>
-
-          <!-- 會議直播 -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-red-600">
-            <div class="flex items-center mb-4">
-              <svg class="w-8 h-8 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                會議直播
-              </h3>
-            </div>
-            <p class="text-gray-600 dark:text-gray-300 mb-6">
-              觀看議會會議現場直播
-            </p>
-            <button 
-              class="w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
-              @click="handleServiceClick('會議直播')"
-            >
-              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.586a1 1 0 01.707.293l2.414 2.414a1 1 0 00.707.293H15" />
-              </svg>
-              觀看直播
-            </button>
-          </div>
-
-          <!-- 聯絡資訊 -->
-          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-gray-600">
-            <div class="flex items-center mb-4">
-              <svg class="w-8 h-8 text-gray-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
-                聯絡資訊
-              </h3>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600 dark:text-gray-300">
-              <p>
-                <strong>辦公室：</strong><br>
-                商學大樓 B1F08 室
-              </p>
-              <p>
-                <strong>議場：</strong><br>
-                綜合體育館 2F44 室
-              </p>
-              <p>
-                <strong>電子郵件：</strong><br>
-                <a href="https://pili.app/email-html/show/?text=ntpuscs%40gmail.com&title=%E4%B8%89%E5%B3%BD%E6%A0%A1%E5%8D%80%E5%AD%B8%E7%94%9F%E8%AD%B0%E6%9C%83%20%E7%A7%98%E6%9B%B8%E8%99%95" class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300" target="_blank" rel="noopener noreferrer">
-                  請點此展開
-                </a>
-              </p>
-            </div>
           </div>
         </div>
 

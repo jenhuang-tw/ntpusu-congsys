@@ -16,14 +16,6 @@
 
         <!-- 桌面版導覽選單 -->
         <nav class="hidden md:flex items-center space-x-6">
-          <a 
-            :href="config.public.proposalFormUrl" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors"
-          >
-            提案系統
-          </a>
           <NuxtLink 
             to="/bill" 
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors"
@@ -31,7 +23,7 @@
             議案查詢
           </NuxtLink>
           <a 
-            :href="config.public.meetingRecordsUrl" 
+            :href="EXTERNAL_LINKS.meetingRecords" 
             target="_blank" 
             rel="noopener noreferrer"
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors"
@@ -42,10 +34,10 @@
             to="/more-service" 
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors"
           >
-            其他服務
+            議事專區
           </NuxtLink>
           <a 
-            :href="config.public.congressWebsiteUrl" 
+            :href="EXTERNAL_LINKS.mainWebsite" 
             target="_blank" 
             rel="noopener noreferrer"
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors"
@@ -72,14 +64,6 @@
       <!-- 行動版選單 -->
       <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-gray-200 dark:border-gray-700">
         <nav class="flex flex-col space-y-3">
-          <a 
-            :href="config.public.proposalFormUrl" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors py-2"
-          >
-            提案系統
-          </a>
           <NuxtLink 
             to="/bill" 
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors py-2"
@@ -88,7 +72,7 @@
             議案查詢
           </NuxtLink>
           <a 
-            :href="config.public.meetingRecordsUrl" 
+            :href="EXTERNAL_LINKS.meetingRecords" 
             target="_blank" 
             rel="noopener noreferrer"
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors py-2"
@@ -100,10 +84,10 @@
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors py-2"
             @click="closeMobileMenu"
           >
-            其他服務
+            議事專區
           </NuxtLink>
           <a 
-            :href="config.public.congressWebsiteUrl" 
+            :href="EXTERNAL_LINKS.mainWebsite" 
             target="_blank" 
             rel="noopener noreferrer"
             class="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary-400 transition-colors py-2"
