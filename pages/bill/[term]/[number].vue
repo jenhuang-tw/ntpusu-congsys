@@ -40,16 +40,24 @@
 
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">議案資訊</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-white">詳細資料</h2>
         </div>
-        <div class="overflow-x-auto">
+        <div>
           <table class="w-full">
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
-              <tr v-for="(field, index) in displayFields" :key="index">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 w-1/4">
+            <tbody>
+              <tr
+                v-for="(field, index) in displayFields"
+                :key="index"
+                class="block sm:table-row border-b sm:border-0 last:border-b-0"
+              >
+                <td
+                  class="block sm:table-cell px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white bg-gray-50 dark:bg-gray-700/50 w-full sm:w-1/4 border-b-0 sm:border-b"
+                >
                   {{ field.label }}
                 </td>
-                <td class="px-6 py-4 text-sm text-gray-700 dark:text-gray-300">
+                <td
+                  class="block sm:table-cell px-6 py-4 text-sm text-gray-700 dark:text-gray-300 border-b-0 sm:border-b"
+                >
                   <div v-if="field.key === 'attachments'" class="space-y-2">
                     <div v-for="(attachment, attachIndex) in getAttachments(bill)" :key="attachIndex">
                       <a
