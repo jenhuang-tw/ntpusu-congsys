@@ -129,6 +129,30 @@
             </button>
           </div>
 
+          <!-- 動議系統 -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-cyan-600">
+            <div class="flex items-center mb-4">
+              <svg class="w-8 h-8 text-cyan-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2a4 4 0 014-4h4m0 0V7m0 4l-4-4-4 4" />
+              </svg>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                動議系統
+              </h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              會議中以文字提出較複雜之動議
+            </p>
+            <button 
+              class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
+              @click="handleServiceClick('動議系統')"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              前往系統
+            </button>
+          </div>
+
           <!-- 議事規則查詢 -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-orange-600">
             <div class="flex items-center mb-4">
@@ -247,6 +271,9 @@ switch (serviceName) {
      break;
    case '預算變更系統':
      window.open(EXTERNAL_LINKS.budgetSystem, '_blank');
+     break;
+   case '動議系統':
+     window.open(EXTERNAL_LINKS.motionSystem, '_blank');
      break;
    case '議事規則查詢':
      window.open(EXTERNAL_LINKS.yiShiGuiZe, '_blank');

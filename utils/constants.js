@@ -14,6 +14,7 @@ export const EXTERNAL_LINKS = {
   meetingRecords: 'https://ntpusu.org/conference/legi-sanxia/minute-sx',
   mainWebsite: 'https://ntpusu.org/',
   inviteSystem: 'https://forms.gle/5w2BfVCTQTpXxyfd7',
+  motionSystem: 'https://forms.gle/zLcLsJpZGNL2viYK9',
   budgetSystem: 'https://forms.gle/hGQSzzAZcEdSHWBdA',
   yiShiGuiZe: 'https://ntpusu.org/regulation-index/rule-list-sanxia',
   liveStream: 'https://www.youtube.com/@ntpusu-sanxia-student-congress'
