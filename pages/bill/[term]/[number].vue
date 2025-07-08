@@ -87,7 +87,9 @@
                     <!-- 列印模式：顯示純文字 -->
                     <div class="hidden print:block break-all">
                       <div v-for="(attachment, attachIndex) in getAttachments(bill)" :key="attachIndex">
-                        附件 {{ attachIndex + 1 }}：{{ attachment.url }}
+                        <span style="text-indent: -1em; margin-left: 1em; display: block;">
+                          附件 {{ attachIndex + 1 }}：{{ attachment.url }}
+                        </span>
                       </div>
                       <div v-if="getAttachments(bill).length === 0" class="text-gray-500">
                         無附件
