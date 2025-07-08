@@ -64,6 +64,14 @@
           共找到 {{ filteredBills.length }} 筆議案 (總計 {{ totalItems }} 筆)
         </div>
 
+        <!-- 上方分頁選單 -->
+        <Pagination
+          v-model:current-page="currentPage"
+          :total-pages="frontendTotalPages"
+          :total-items="filteredBills.length"
+          :items-per-page="itemsPerPage"
+        />
+
         <div class="grid gap-4">
           <BillCard
             v-for="bill in paginatedBills"
@@ -73,11 +81,12 @@
           />
         </div>
 
+        <!-- 下方分頁選單 -->
         <Pagination
-          :current-page="currentPage"
-          :total-pages="totalPages"
-          :total-items="totalItems"
-          @page-change="handlePageChange"
+          v-model:current-page="currentPage"
+          :total-pages="frontendTotalPages"
+          :total-items="filteredBills.length"
+          :items-per-page="itemsPerPage"
         />
       </div>
 
@@ -159,6 +168,11 @@ const filters = ref({
   keyword: '',
   dateFrom: '',
   dateTo: ''
+})
+
+// 用過濾後的資料來算分頁數
+const frontendTotalPages = computed(() => {
+  return Math.ceil(filteredBills.value.length / itemsPerPage)
 })
 
 // 使用 composable 獲取議案資料
@@ -333,7 +347,6 @@ const resetFilters = () => {
 
 const handlePageChange = (page) => {
   currentPage.value = page
-  
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
