@@ -97,6 +97,9 @@
                   <div v-else-if="field.key === '提案時間'">
                     {{ formatTimestamp(bill[field.originalKey]) }}
                   </div>
+                  <div v-else-if="field.isMultiline && field.key === '說明'" class="whitespace-pre-wrap">
+                    <span v-html="formatIndentedDescription(bill[field.originalKey])"></span>
+                  </div>
                   <div v-else-if="field.isMultiline" class="whitespace-pre-wrap">
                     {{ bill[field.originalKey] || '無' }}
                   </div>
@@ -335,6 +338,22 @@ const getAttachments = (billData) => {
   return attachments;
 };
 
+
+// 說明欄位：偵測每行是否以「一、」等開頭，若是則凸排兩全形字元
+function formatIndentedDescription(desc) {
+  if (!desc) return '無';
+  const cjkNums = '一二三四五六七八九十';
+  return desc
+    .split('\n')
+    .map(line => {
+      if (line.match(new RegExp(`^[${cjkNums}]、`))) {
+        // 使用 <p> 並套用 text-indent 與 margin-left
+        return `<p style="text-indent: -2em; margin-left: 2em;">${line}</p>`;
+      }
+      return `<p>${line}</p>`;
+    })
+    .join('');
+}
 
 // 複製連結功能
 const copyUrl = () => {
