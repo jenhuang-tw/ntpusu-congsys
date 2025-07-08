@@ -1,6 +1,12 @@
 <template>
   <div class="container mx-auto px-4 py-8">
-    <nav class="mb-6">
+    <!-- 列印專用標題 -->
+    <div class="hidden print:block text-center mb-8">
+      <h1 class="text-2xl font-bold">國立臺北大學三峽校區學生議會提案資料</h1>
+    </div>
+
+    <!-- 導覽列與麵包屑：列印時隱藏 -->
+    <nav class="mb-6 print:hidden">
       <ol class="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
         <li>
           <NuxtLink to="/" class="hover:text-primary">首頁</NuxtLink>
@@ -11,27 +17,27 @@
         </li>
         <li>/</li>
         <li>
-          <NuxtLink :to="`/bill/${term}`" class="hover:text-primary">第{{ term }}屆</NuxtLink>
+          <NuxtLink :to="`/bill/${term.value}`" class="hover:text-primary">第{{ term.value }}屆</NuxtLink>
         </li>
         <li>/</li>
         <li class="text-gray-900 dark:text-white">第{{ number }}號</li>
       </ol>
     </nav>
 
-    <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+    <div v-if="error" class="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg print:hidden">
       <div class="flex items-center">
         <ExclamationTriangleIcon class="h-5 w-5 text-red-500 mr-2" />
         <p class="text-red-700 dark:text-red-300">{{ error.message || '載入資料失敗' }}</p>
       </div>
     </div>
 
-    <div v-if="pending" class="flex justify-center items-center py-12">
+    <div v-if="pending" class="flex justify-center items-center py-12 print:hidden">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       <span class="ml-2 text-gray-600 dark:text-gray-300">載入中...</span>
     </div>
 
     <div v-if="!pending && !error && bill" class="space-y-6">
-      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+      <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 print:hidden">
         <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">
           {{ bill.編號 }}
         </h1>
@@ -39,7 +45,7 @@
       </div>
 
       <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700 print:hidden">
           <h2 class="text-lg font-semibold text-gray-900 dark:text-white">詳細資料</h2>
         </div>
         <div>
@@ -76,7 +82,7 @@
                       無附件
                     </div>
                   </div>
-                  <div v-else-if="field.key === '提案時間'" class="font-mono">
+                  <div v-else-if="field.key === '提案時間'">
                     {{ formatTimestamp(bill[field.originalKey]) }}
                   </div>
                   <div v-else-if="field.isMultiline" class="whitespace-pre-wrap">
@@ -92,7 +98,8 @@
         </div>
       </div>
 
-      <div class="flex flex-wrap gap-4">
+      <!-- 下排按鈕：列印時隱藏 -->
+      <div class="flex flex-wrap gap-4 print:hidden">
         <NuxtLink
           :to="`/bill/${term}`"
           class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
@@ -117,7 +124,7 @@
       </div>
     </div>
 
-    <div v-if="!pending && !error && !bill" class="text-center py-12">
+    <div v-if="!pending && !error && !bill" class="text-center py-12 print:hidden">
       <DocumentTextIcon class="h-16 w-16 text-gray-400 mx-auto mb-4" />
       <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">找不到此議案</h3>
       <p class="text-gray-600 dark:text-gray-300">請確認議案編號是否正確</p>
@@ -133,9 +140,19 @@
 
     <div
       v-if="showCopySuccess"
-      class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50"
+      class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 print:hidden"
     >
       連結已複製到剪貼簿
+    </div>
+
+    <!-- 列印專用結尾 -->
+    <div
+      class="hidden print:block text-sm text-gray-700 mt-12"
+      style="word-break: break-all;"
+    >
+      <div>
+        {{ printFooterText }}
+      </div>
     </div>
   </div>
 </template>
@@ -154,11 +171,10 @@ import {
 
 // 獲取路由參數
 const route = useRoute()
-const term = parseInt(route.params.term)
-const number = parseInt(route.params.number)
+const term = computed(() => parseInt(route.params.term))
+const number = computed(() => parseInt(route.params.number))
 
-// 驗證參數 (這裡的錯誤處理會被 Nuxt 的 createError 捕獲)
-if (!term || isNaN(term) || !number || isNaN(number)) {
+if (!term.value || isNaN(term.value) || !number.value || isNaN(number.value)) {
   throw createError({
     statusCode: 404,
     statusMessage: '議案參數無效'
@@ -168,9 +184,9 @@ if (!term || isNaN(term) || !number || isNaN(number)) {
 // 使用 Nuxt 內建的 useAsyncData 來從 API 獲取資料
 // URL 直接指向我們新建立的 API 路由
 const { data, pending, error } = await useAsyncData(
-  `bill-${term}-${number}`, // 唯一的 key
-  () => $fetch(`/api/bills/${term}/${number}`) // 請求我們的 API
-);
+  `bill-${term.value}-${number.value}`, // 唯一的 key
+  () => $fetch(`/api/bills/${term.value}/${number.value}`) // 請求 API
+)
 
 // 解構出 bill 資料
 // 注意：如果 API 返回 { bill: targetBill }，那麼 data.value.bill 就是您要的議案物件
@@ -326,4 +342,24 @@ const copyUrl = () => {
 const printPage = () => {
   window.print();
 };
+
+// 列印頁尾資訊
+const printFooterText = computed(() => {
+  const now = new Date()
+  const pad = n => n.toString().padStart(2, '0')
+  const dateStr = `資料為${now.getFullYear()-1911}年${now.getMonth() + 1}月${now.getDate()}日${pad(now.getHours())}時${pad(now.getMinutes())}分${pad(now.getSeconds())}秒`
+  return `${dateStr}自網址 ${typeof window !== 'undefined' ? window.location.href : ''} 載入。`
+})
 </script>
+
+<style>
+/* filepath: bill/:term/:number */
+/* Tailwind 已有 print:hidden、print:block，這裡保險再補充一次 */
+@media print {
+  .print\:hidden { display: none !important; }
+  .print\:block { display: block !important;  }
+    body {
+    font-family: "Times New Roman", Times, "標楷體", "DFKai-SB", serif !important;
+  }
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+  <footer class="bg-gray-50 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 print:hidden">
     <div class="container mx-auto px-4 py-8">
       <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
         <!-- 組織資訊 -->
