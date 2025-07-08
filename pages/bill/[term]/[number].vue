@@ -17,7 +17,7 @@
         </li>
         <li>/</li>
         <li>
-          <NuxtLink :to="`/bill/${term.value}`" class="hover:text-primary">第{{ term.value }}屆</NuxtLink>
+          <NuxtLink :to="`/bill/${term}`" class="hover:text-primary">第{{ term }}屆</NuxtLink>
         </li>
         <li>/</li>
         <li class="text-gray-900 dark:text-white">第{{ number }}號</li>
@@ -311,7 +311,7 @@ const getAttachments = (billData) => {
         } else { // Try to get a more descriptive name if possible (e.g., from the example data)
             // For Google Drive 'open' links, the actual file name isn't in the URL easily.
             // We'll stick to a generic name or require a 'name:url' format from the sheet.
-            name = `附件 ${i} (文件)`;
+            name = `附件 ${i} (開啟 Google Drive 連結)`;
         }
       } catch (e) {
           // If URL parsing fails, stick with default name
@@ -360,6 +360,22 @@ const printFooterText = computed(() => {
   .print\:block { display: block !important;  }
     body {
     font-family: "Times New Roman", Times, "標楷體", "DFKai-SB", serif !important;
+  }
+  /* 表格字體放大 */
+  table, th, td {
+    font-size: 1.1rem !important;
+  }
+  /* 標題欄（左欄）粗體、全黑 */
+  td:first-child {
+    font-weight: bold !important;
+    color: #000 !important;
+    background: none !important;
+  }
+  /* 資料欄（右欄）正常粗細、全黑 */
+  td:not(:first-child) {
+    font-weight: normal !important;
+    color: #000 !important;
+    background: none !important;
   }
 }
 </style>
