@@ -13,13 +13,13 @@
         class="bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
       >
         <div class="p-6">
-          <div class="text-primary text-sm font-semibold mb-2">第 {{ term }} 屆</div>
+          <div class="text-primary text-sm font-semibold mb-2 dark:text-primary-400">第 {{ term }} 屆</div>
           <h2 class="text-xl font-bold text-gray-900 dark:text-white">學生議會</h2>
           <p class="text-gray-600 dark:text-gray-400 text-sm mt-2">點擊查看本屆議案</p>
         </div>
         <div 
           v-if="term === currentTerm" 
-          class="bg-primary-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg absolute top-0 right-0"
+          class="bg-primary-500 dark:bg-primary-400 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg absolute top-0 right-0"
         >
           當前屆次
         </div>

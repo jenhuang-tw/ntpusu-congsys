@@ -126,14 +126,14 @@
         </NuxtLink>
         <button
           @click="copyUrl"
-          class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"
+          class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors dark:bg-primary-400 dark:hover:bg-primary-300"
         >
           <LinkIcon class="h-4 w-4 mr-2" />
           複製連結
         </button>
         <button
           @click="printPage"
-          class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors dark:bg-green-700 dark:hover:bg-green-800"
         >
           <PrinterIcon class="h-4 w-4 mr-2" />
           列印
