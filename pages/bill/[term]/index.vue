@@ -51,10 +51,10 @@
 
       <div v-if="!pending && !error" class="mb-8">
         <BillFilter
-          :filters="filters"
+          :filters="filters.value"
           :available-terms="[parseInt(route.params.term)]" :available-types="availableTypes"
           :available-agencies="availableAgencies"
-          @update-filters="updateFilters"
+          @update:filters="updateFilters"
           @reset-filters="resetFilters"
         />
       </div>
@@ -244,78 +244,77 @@ const formatTimestampToISO = (timestampString) => {
 
 // 計算過濾後的議案
 const filteredBills = computed(() => {
-  if (!Array.isArray(bills.value)) {
-    console.log('Bills value is not an array or is null/undefined:', bills.value);
-    return [];
-  }
+  if (!Array.isArray(bills.value)) return []
 
-  console.log(`Filtering ${bills.value.length} bills from API.`);
-  console.log('Current filters used for client-side filtering:', filters.value);
-
-  const filtered = bills.value.filter(bill => {
+  return bills.value.filter(bill => {
     // 屆次篩選
-    const billTerm = extractTermFromNumber(bill.編號);
-    const termMatches = (billTerm === term);
-    if (!termMatches) {
-        return false;
-    }
+    const billTerm = extractTermFromNumber(bill.編號)
+    if (billTerm !== term) return false
 
-    // 類型篩選
-    const typeMatches = (!filters.value.type || bill.提案類型 === filters.value.type);
-    if (!typeMatches) {
-        return false;
-    }
+    // 類型篩選（支援 type 或 提案類型）
+    if (
+      (filters.value.type && bill.提案類型 !== filters.value.type) ||
+      (filters.value.提案類型 && bill.提案類型 !== filters.value.提案類型)
+    ) return false
 
-    // 機關篩選
-    const agencyMatches = (!filters.value.agency || bill['提案機關/議員'] === filters.value.agency);
-    if (!agencyMatches) {
-        // console.log(`Bill ${bill.編號}: Agency mismatch (Bill agency: ${bill['提案機關/議員']}, Filter agency: ${filters.value.agency})`); // 您可以在開發時取消註解此行
-        return false;
-    }
+    // 機關篩選（支援 agency 或 提案機關/議員）
+    if (
+      (filters.value.agency && bill['提案機關/議員'] !== filters.value.agency) ||
+      (filters.value['提案機關/議員'] && bill['提案機關/議員'] !== filters.value['提案機關/議員'])
+    ) return false
 
-    // 關鍵字篩選
-    const keywordMatches = (!filters.value.keyword ||
-                            [bill?.案由, bill?.說明, bill?.辦法, bill?.編號]
-                              .filter(Boolean)
-                              .join(' ')
-                              .toLowerCase()
-                              .includes(filters.value.keyword.toLowerCase()));
-    if (!keywordMatches) {
-        // console.log(`Bill ${bill.編號}: Keyword mismatch (Keyword: ${filters.value.keyword})`); // 您可以在開發時取消註解此行
-        return false;
-    }
+    // 編號篩選
+    if (
+      filters.value.編號 &&
+      !String(bill.編號).includes(filters.value.編號)
+    ) return false
 
-    // 日期篩選
-    const billDateISO = formatTimestampToISO(bill.時間戳記);
-    const dateParsed = (billDateISO !== null); // 檢查日期解析是否成功
+    // 提案人篩選
+    if (
+      filters.value['提案機關主管/提案議員姓名'] &&
+      !String(bill['提案機關主管/提案議員姓名'] || '').includes(filters.value['提案機關主管/提案議員姓名'])
+    ) return false
 
-    if (!dateParsed) { // 倘若日期解析失敗，則排除此議案
-      return false;
-    }
+    // 案由篩選
+    if (
+      filters.value.案由 &&
+      !String(bill.案由 || '').includes(filters.value.案由)
+    ) return false
 
-    let dateRangeMatches = true;
-    if (filters.value.dateFrom && billDateISO < filters.value.dateFrom) {
-      dateRangeMatches = false;
-    }
-    if (filters.value.dateTo && billDateISO > filters.value.dateTo) {
-      dateRangeMatches = false;
-    }
+    // 說明篩選
+    if (
+      filters.value.說明 &&
+      !String(bill.說明 || '').includes(filters.value.說明)
+    ) return false
 
-    if (!dateRangeMatches) {
-      return false;
-    }
+    // 辦法篩選
+    if (
+      filters.value.辦法 &&
+      !String(bill.辦法 || '').includes(filters.value.辦法)
+    ) return false
 
-    // console.log(`Bill ${bill.編號}: All filters passed.`); // 您可以在開發時取消註解此行
-    return true;
-  });
+    // 關鍵字篩選（支援 keyword）
+    if (
+      filters.value.keyword &&
+      ![bill?.案由, bill?.說明, bill?.辦法, bill?.編號]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(filters.value.keyword.toLowerCase())
+    ) return false
 
-  console.log(`After client-side filtering, ${filtered.length} bills remain.`);
-  return filtered.sort((a, b) => {
-    // 排序用完整 ISO 字串比較，精確到時分秒
-    const dateA = formatTimestampToISO(a.時間戳記);
-    const dateB = formatTimestampToISO(b.時間戳記);
-    if (!dateA || !dateB) return 0;
-    return dateB.localeCompare(dateA); // 降序排序
+    // 日期範圍篩選
+    const billDateISO = formatTimestampToISO(bill.時間戳記)
+    if (!billDateISO) return false
+    if (filters.value.dateFrom && billDateISO < filters.value.dateFrom) return false
+    if (filters.value.dateTo && billDateISO > filters.value.dateTo) return false
+
+    return true
+  }).sort((a, b) => {
+    const dateA = formatTimestampToISO(a.時間戳記)
+    const dateB = formatTimestampToISO(b.時間戳記)
+    if (!dateA || !dateB) return 0
+    return dateB.localeCompare(dateA)
   })
 })
 
