@@ -65,21 +65,33 @@
                   class="block sm:table-cell px-6 py-4 text-sm text-gray-700 dark:text-gray-300 border-b-0 sm:border-b"
                 >
                   <div v-if="field.key === 'attachments'" class="space-y-2">
-                    <div v-for="(attachment, attachIndex) in getAttachments(bill)" :key="attachIndex">
-                      <a
-                        v-if="attachment.url"
-                        :href="attachment.url"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="inline-flex items-center text-primary hover:text-primary-600 hover:underline"
-                      >
-                        <DocumentIcon class="h-4 w-4 mr-1" />
-                        {{ attachment.name }}
-                        <ArrowTopRightOnSquareIcon class="h-3 w-3 ml-1" />
-                      </a>
+                    <!-- 非列印模式：顯示連結 -->
+                    <div v-if="!window?.matchMedia?.('print').matches" class="print:hidden">
+                      <div v-for="(attachment, attachIndex) in getAttachments(bill)" :key="attachIndex">
+                        <a
+                          v-if="attachment.url"
+                          :href="attachment.url"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="inline-flex items-center text-primary hover:text-primary-600 hover:underline"
+                        >
+                          <DocumentIcon class="h-4 w-4 mr-1" />
+                          {{ attachment.name }}
+                          <ArrowTopRightOnSquareIcon class="h-3 w-3 ml-1" />
+                        </a>
+                      </div>
+                      <div v-if="getAttachments(bill).length === 0" class="text-gray-500 dark:text-gray-400">
+                        無附件
+                      </div>
                     </div>
-                    <div v-if="getAttachments(bill).length === 0" class="text-gray-500 dark:text-gray-400">
-                      無附件
+                    <!-- 列印模式：顯示純文字 -->
+                    <div class="hidden print:block break-all">
+                      <div v-for="(attachment, attachIndex) in getAttachments(bill)" :key="attachIndex">
+                        附件 {{ attachIndex + 1 }}：{{ attachment.url }}
+                      </div>
+                      <div v-if="getAttachments(bill).length === 0" class="text-gray-500">
+                        無附件
+                      </div>
                     </div>
                   </div>
                   <div v-else-if="field.key === '提案時間'">
