@@ -85,13 +85,13 @@
       </div>
 
       <div class="flex flex-wrap gap-4">
-        <button
-          @click="$router.back()"
+        <NuxtLink
+          :to="`/bill/${term}`"
           class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
         >
           <ChevronLeftIcon class="h-4 w-4 mr-2" />
-          返回上一頁
-        </button>
+          返回議案清單
+        </NuxtLink>
         <button
           @click="copyUrl"
           class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-600 transition-colors"

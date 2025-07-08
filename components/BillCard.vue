@@ -1,5 +1,6 @@
 <template>
-  <div class="bill-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer" @click="navigateToBill">
+  <NuxtLink :to="`/bill/${billTerm}/${billNumber}`" target="_blank" rel="noopener">
+  <div class="bill-card bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300 cursor-pointer">
     <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
       {{ bill.案由 }}
     </h3>
@@ -26,6 +27,7 @@
 
     </div>
   </div>
+  </NuxtLink>
 </template>
 
 <script setup>
@@ -49,10 +51,6 @@ const billNumber = computed(() => {
   const match = props.bill.編號.match(/第(\d+)號/)
   return match ? match[1] : '1'
 })
-
-const navigateToBill = () => {
-  router.push(`/bill/${billTerm.value}/${billNumber.value}`)
-}
 
 const formatDate = (dateString) => {
   try {

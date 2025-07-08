@@ -77,7 +77,6 @@
             v-for="bill in paginatedBills"
             :key="bill.編號"
             :bill="bill"
-            @click="navigateToBill(bill)"
           />
         </div>
 
@@ -348,14 +347,6 @@ const resetFilters = () => {
 const handlePageChange = (page) => {
   currentPage.value = page
   window.scrollTo({ top: 0, behavior: 'smooth' })
-}
-
-const navigateToBill = (bill) => {
-  const term = extractTermFromNumber(bill.編號)
-  const number = extractNumberFromNumber(bill.編號)
-  if (term && number) {
-    navigateTo(`/bill/${term}/${number}`)
-  }
 }
 
 // 輔助函數
