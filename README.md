@@ -4,32 +4,15 @@
 
 本專案旨在為國立臺北大學學生自治會三峽校區學生議會（下稱：本會）建立一個現代化的議事服務網站。此平台提供以下主要功能：
 
-* **議案查詢**：整合 Google Sheets API，實現議案資料的即時查詢與瀏覽。
-* **提案系統**：使用第 23 屆迄今既有、熟悉的 Google Forms 表單，方便議員與各單位提案。
-* **會議紀錄**：連結至學生自治會共用網站，方便查閱歷次會議紀錄。
-* **其他服務**：提供提案附件範本、邀請備詢系統與預算變更系統等實用工具連結。
+* **資訊公開**：**議案查詢**整合 Google Sheets API，實現議案資料的即時查詢與瀏覽，是本系統主要功能。其他還提供**會議紀錄**連結至學生自治會共用網站，方便查閱歷次會議紀錄，以及本會直播頻道連結。
+* **議事系統**：包含第 23 屆迄今既有、熟悉的 Google Forms **議事系統**，方便議員與各單位提案，並提供提案附件範本、邀請備詢系統與預算變更系統等實用工具連結。
 * **響應式設計**：支援淺色/暗色模式自動切換與手動切換功能。
 
-本專案採用 **Nuxt 3** 框架開發，結合 **Tailwind CSS** 進行快速且美觀的 UI 設計，並透過 **Google Sheets API** 實現資料的動態載入。
+### 網站功能一覽
 
-## 技術
-
-* **框架**：Nuxt 3 (Vue 3)
-* **樣式**：Tailwind CSS
-* **API 串接**：Google Sheets API (透過 `googleapis` 函式庫)
-* **圖標**：Heroicons
-* **部署**：Cloudflare Pages
-* **版本控制**：Git / GitHub
-
-本專案使用 Claude.ai, ChatGPT, Gemini 等服務生成，再由開發者微調。
-
-## 網站預覽
-
-`https://sxcong.ntpusu.org`
+`https://sxcongress.ntpusu.org/`
 
 ![本系統之截圖](/public/screenshot.png)
-
-## 功能一覽
 
 * **首頁**：以區塊形式呈現主要服務連結。
 * **頭部導覽列**：包含網站標題與導覽選單，並提供夜間模式切換按鈕。
@@ -40,7 +23,20 @@
     * 議案詳細頁面 (`/bill/:term/:number`)：顯示單一議案的完整資訊與附件連結。
 * **底部頁腳**：顯示單位名稱及 GitHub Repository 連結。
 
-## 開發環境設置
+## 技術
+
+本專案採用 **Nuxt 3** 框架開發，結合 **Tailwind CSS** 進行快速且美觀的 UI 設計，並透過 **Google Sheets API** 實現資料的動態載入。
+
+* **框架**：Nuxt 3 (Vue 3)
+* **樣式**：Tailwind CSS
+* **API 串接**：Google Sheets API (透過 `googleapis` 函式庫)
+* **圖標**：Heroicons
+* **部署**：Netlify
+* **版本控制**：Git / GitHub
+
+本專案使用 Claude.ai, ChatGPT, Gemini 等服務生成，再由開發者微調。
+
+## 開發
 
 ### 前置準備
 
@@ -93,32 +89,13 @@
     ```
     應用程式將在 `http://localhost:3000` 啟動。
 
-## 部署
+### 部署
 
-本專案建議使用 Cloudflare Pages 進行部署。
+本專案建議使用 Netlify 部署，步驟如下：
 
-### 部署步驟
-
-1.  **建立 GitHub Repository**：
-    如果您尚未建立，請在專案根目錄執行：
-    ```bash
-    git init
-    git add .
-    git commit -m "Initial commit"
-    git branch -M main
-    git remote add origin [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git) # 替換為您的 repo URL
-    git push -u origin main
-    ```
-
-2.  **Cloudflare Pages 部署**：
-    1.  前往 Cloudflare 並登入。
-    2.  連接您的 GitHub 帳戶並匯入本專案的 Repository。
-    3.  在專案設定步驟中，找到「環境變數 (進階)」區塊。
-    4.  將 `.env` 檔案中的 `GOOGLE_SERVICE_ACCOUNT_EMAIL`、`GOOGLE_PRIVATE_KEY` 和 `GOOGLE_SHEETS_ID` 這三個變數及其值加入到 Cloudflare Pages 的環境變數中。**請確保 `GOOGLE_PRIVATE_KEY` 在 Cloudflare Pages 中是單行完整且包含所有換行符號的字串。**
-    5.  點擊「儲存並部署」。
-
-3.  **自定義域名設定**：
-    部署完成後，您可以在 Cloudflare Pages 專案設定中，前往「Domains」區塊，新增自定義域名（例如 `sxcong.ntpusu.org`）並依照 Cloudflare Pages 提供的指示設定 DNS 記錄。
+1.  建立 GitHub Repository。
+2.  Netlify 部署。將 `.env` 檔案中的 `GOOGLE_SERVICE_ACCOUNT_EMAIL`、`GOOGLE_PRIVATE_KEY` 和 `GOOGLE_SHEETS_ID` 這三個變數及其值加入到 Cloudflare Pages 的環境變數中。
+3.  自訂域名設定完成後，Netlify 亦提供自動加密連線服務。
 
 ## 貢獻
 

@@ -23,7 +23,7 @@ export default defineNuxtConfig({
     googleServiceAccountEmail: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
     googlePrivateKey: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
     public: {
-      baseUrl: 'https://sxcong.ntpusu.org'
+      baseUrl: 'https://sxcongress.ntpusu.org/'
     }
   },
   ssr: true, // 確保開啟 SSR

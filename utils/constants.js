@@ -3,7 +3,7 @@ export const SITE_CONFIG = {
   name: '三峽校區議事服務',
   fullName: '國立臺北大學學生自治會 三峽校區學生議會',
   englishName: 'Sanxia Campus Student Congress, NTPUSU',
-  domain: 'sxcong.ntpusu.org',
+  domain: 'sxcongress.ntpusu.org',
   email: 'ntpuscs@gmail.com',
   githubRepo: 'https://github.com/jenhuang-tw/ntpusu-congsys'
 };
