@@ -15,6 +15,30 @@
 
         <!-- 服務區塊 -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <!-- 提案系統 -->
+          <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-indigo-600">
+            <div class="flex items-center mb-4">
+              <svg class="w-8 h-8 text-indigo-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              <h3 class="text-xl font-semibold text-gray-900 dark:text-white">
+                提案系統
+              </h3>
+            </div>
+            <p class="text-gray-600 dark:text-gray-300 mb-6">
+              本會議員與機關提案用
+            </p>
+            <button 
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 flex items-center justify-center"
+              @click="handleServiceClick('提案系統')"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+              前往系統
+            </button>
+          </div>
+
           <!-- 提案附件範本 -->
           <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 border-t-4 border-blue-600">
             <div class="flex items-center mb-4">
@@ -266,6 +290,9 @@ const handleServiceClick = (serviceName) => {
 
 switch (serviceName) {
   
+  case '提案系統':
+    window.open(EXTERNAL_LINKS.proposalSystem, '_blank');
+     break;
   case '邀請備詢系統':
     window.open(EXTERNAL_LINKS.inviteSystem, '_blank');
      break;
