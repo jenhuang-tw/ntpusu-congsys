@@ -313,25 +313,28 @@ const getAttachments = (billData) => {
   let i = 1;
   while (billData[`附件${i}`]) {
     const attachmentString = billData[`附件${i}`];
-    // Assuming the format is just a URL for simplicity based on provided data
-    // If you have 'name:url' in separate '附件X' fields, adjust accordingly
     if (attachmentString.trim()) {
-      // Attempt to extract name from URL if no explicit name is given, or use a default
-      const url = attachmentString.startsWith('http') ? attachmentString : `https://${attachmentString}`;
+      
       let name = `附件 ${i}`; // Default name
-      try {
-        const urlObj = new URL(url);
-        const pathParts = urlObj.pathname.split('/');
-        const fileName = pathParts[pathParts.length - 1];
-        if (fileName && fileName !== 'open') { // Avoid naming "open"
-            name = decodeURIComponent(fileName);
-        } else { // Try to get a more descriptive name if possible (e.g., from the example data)
-            // For Google Drive 'open' links, the actual file name isn't in the URL easily.
-            // We'll stick to a generic name or require a 'name:url' format from the sheet.
-            name = `附件 ${i} (開啟 Google Drive 連結)`;
+
+      const url = attachmentString.startsWith('http') ? attachmentString : `https://${attachmentString}`;
+
+      if (url.startsWith('https://drive.google.com/')) {
+        // For Google Drive links
+        name = `附件 ${i} (Google Drive 連結)`;
+      }
+      else {
+        // 如非 Google Drive 連結，嘗試解析檔名
+        try {
+          const urlObj = new URL(url);
+          const pathParts = urlObj.pathname.split('/');
+          const fileName = pathParts[pathParts.length - 1];
+          if (fileName) {
+              name = decodeURIComponent(fileName);
+          }
+        } catch (e) {
+            // If URL parsing fails, stick with default name
         }
-      } catch (e) {
-          // If URL parsing fails, stick with default name
       }
       attachments.push({ name: name, url: url });
     }
