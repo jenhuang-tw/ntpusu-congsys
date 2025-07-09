@@ -113,6 +113,30 @@
           </NuxtLink>
         </div>
       </div>
+      
+      <!-- 議事日程 -->
+      <div class="card">
+        <div class="card-body">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-primary dark:bg-indigo-600 text-white rounded-lg flex items-center justify-center mr-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">議事日程</h2>
+          </div>
+          <p class="text-gray-600 dark:text-gray-400 mb-4">
+            瀏覽學生議會三峽校區各項會議期程。
+          </p>
+          <NuxtLink to="/calander" class="btn btn-primary">
+            前往查看
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+            </svg>
+          </NuxtLink>
+        </div>
+      </div>
+
 
       <!-- 本會聯絡方式 -->
       <div class="card">
@@ -124,7 +148,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5a2 2 0 012-2h2a2 2 0 012 2v2H8V5z"/>
               </svg>
             </div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">學生議會</h2>
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">聯絡我們</h2>
           </div>
               <p class="text-gray-600 dark:text-gray-400 mb-2 text-sm">
                 <strong>辦公室：</strong><br />
@@ -142,38 +166,10 @@
               </p>
         </div>
       </div>
-
-      <!-- 最新消息 -->
-      <div class="card">
-        <div class="card-body">
-          <div class="flex items-center mb-4">
-            <div class="w-10 h-10 bg-primary text-white rounded-lg flex items-center justify-center mr-3">
-              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">系統公告</h2>
-          </div>
-          <p class="text-gray-600 dark:text-gray-400 mb-4">
-            本系統開源，歡迎貢獻。
-          </p>
-          <a 
-            :href="SITE_CONFIG.githubRepo" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="btn btn-secondary"
-          >
-            GitHub Repository
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
-            </svg>
-          </a>
-        </div>
-      </div>
     </div>
 
-    <!-- 統計資訊 -->
-    <div class="mt-12 bg-gray-50 dark:bg-gray-800 rounded-lg p-8">
+    <!-- 統計資訊 (維護中) -->
+    <!-- <div class="mt-12 bg-gray-50 dark:bg-gray-800 rounded-lg p-8">
       <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
         系統統計(維護中)
       </h2>
@@ -191,7 +187,7 @@
           <div class="text-gray-600 dark:text-gray-400">本屆議案數</div>
         </div>
       </div>
-    </div>
+    </div>-->
   </div>
 </template>
 
