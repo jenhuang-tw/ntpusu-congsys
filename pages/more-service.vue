@@ -202,8 +202,9 @@
           </div>
         </div>
 
-        <!-- 返回首頁按鈕 -->
-        <div class="text-center mt-12">
+        <!-- 返回首頁與秘書處排案系統按鈕 -->
+        <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-12">
+          <!-- 返回首頁 -->
           <NuxtLink 
             to="/" 
             class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors duration-200"
@@ -213,7 +214,19 @@
             </svg>
             返回首頁
           </NuxtLink>
+
+          <!-- 秘書處排案系統 -->
+          <NuxtLink 
+            to="/secretariat" 
+            class="inline-flex items-center px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium rounded-md transition-colors duration-200"
+          >
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16h8M8 12h8m-8-4h8M4 6h16M4 18h16" />
+            </svg>
+            秘書處排案系統
+          </NuxtLink>
         </div>
+
       </div>
     </div>
   </div>
