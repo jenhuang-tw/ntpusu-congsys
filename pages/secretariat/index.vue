@@ -42,7 +42,7 @@ definePageMeta({
       </div>
 
       <p class="mt-8 text-sm text-gray-500">
-        <NuxtLink to="/" class="text-blue-500 hover:underline">返回主系統</NuxtLink>
+        <NuxtLink to="/" class="text-blue-500 hover:underline">網站首頁</NuxtLink>、<NuxtLink to="/more-service" class="text-blue-500 hover:underline">議事專區</NuxtLink>
       </p>
     </div>
   </div>
