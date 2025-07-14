@@ -41,6 +41,9 @@ function toChineseNumeral(num: number): string {
   if (num >= 0 && num <= 10) {
     return chineseNumerals[num];
   }
+  else if (num > 10 && num < 20) {
+    return '十' + (num % 10 === 0 ? '' : chineseNumerals[num % 10]);
+  }
   // 對於大於10的數字，可以擴展此邏輯，但根據需求，議案順序通常不會太大
   // 這裡簡單處理，如果超出範圍，直接返回數字字串
   return num.toString();
