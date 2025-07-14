@@ -44,8 +44,7 @@ function toChineseNumeral(num: number): string {
   else if (num > 10 && num < 20) {
     return '十' + (num % 10 === 0 ? '' : chineseNumerals[num % 10]);
   }
-  // 對於大於10的數字，可以擴展此邏輯，但根據需求，議案順序通常不會太大
-  // 這裡簡單處理，如果超出範圍，直接返回數字字串
+  // 對於大於20的數字簡單處理，如果超出範圍，直接返回數字字串
   return num.toString();
 }
 
@@ -70,7 +69,8 @@ export function useSecretariat() {
     try {
       // 使用 Nuxt 3 的 useFetch 函數進行 API 請求
       // 將泛型型別改為 ApiResponse
-      const { data, pending, error: fetchError } = await useFetch<ApiResponse>(`/api/bills/${currentTerm.value}`);
+      // 根據歷史經驗，每屆提案可能高達一百多案。
+      const { data, pending, error: fetchError } = await useFetch<ApiResponse>(`/api/bills/${currentTerm.value}?pageSize=150`);
 
       if (fetchError.value) {
         error.value = `獲取議案資料失敗：${fetchError.value.message}`;

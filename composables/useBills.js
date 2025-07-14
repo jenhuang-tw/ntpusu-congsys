@@ -123,7 +123,7 @@ export const useBills = () => {
       const response = await $fetch(`/api/bills/${termNumber}`, {
         params: {
           page: 1,
-          pageSize: 1000 // 獲取大量資料以確保找到目標議案，這裡保持1000是合理的
+          pageSize: 150, // 依據歷史經驗，假設每屆議案數量不會超過150。如果會超過，請記得修改此處，以及其他程式。
         }
       })
 
