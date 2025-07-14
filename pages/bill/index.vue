@@ -29,6 +29,21 @@
     <div class="mt-12 text-center text-gray-500 dark:text-gray-400">
       <p>資料範圍：第 {{ STARTING_TERM }} 屆起</p>
     </div>
+
+    <!-- 舊版查詢系統連結 -->
+    <div class="mt-8 text-center">
+      <a 
+        href="https://ntpusu.org/conference/legi-sanxia/bill-sanxia"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 border border-gray-300 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 dark:focus:ring-gray-400"
+      >
+        舊版已提案件查詢系統
+        <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+        </svg>
+      </a>
+    </div>
   </div>
 </template>
 
