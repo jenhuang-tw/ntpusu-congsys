@@ -23,7 +23,7 @@ export async function fetchAllBillsFromGoogleSheets() {
     // 從 Google Sheets 獲取資料
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: process.env.GOOGLE_SHEETS_ID,
-      range: 'A1:O1000', // 調整範圍以包含所有資料，確保能讀取到所有數據
+      range: 'A1:P1000', // 調整範圍以包含所有資料，確保能讀取到所有數據
     });
 
     const rows = response.data.values;

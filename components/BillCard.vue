@@ -26,6 +26,11 @@
 </p>
 
     </div>
+    <div class="text-sm text-gray-700 dark:text-gray-300">
+      <p v-if="bill['排入會議'] !== ''">
+        <strong>排入會議：</strong>{{ bill['排入會議'] }}
+      </p>
+    </div>
   </div>
   </NuxtLink>
 </template>

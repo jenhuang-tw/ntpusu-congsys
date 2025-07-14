@@ -249,7 +249,8 @@ const displayFields = computed(() => [
   { label: '案由', key: '案由', originalKey: '案由', isMultiline: true },
   { label: '說明', key: '說明', originalKey: '說明', isMultiline: true },
   { label: '辦法', key: '辦法', originalKey: '辦法', isMultiline: true },
-  { label: '附件', key: 'attachments', originalKey: 'attachments' } // This will now be a "virtual" field
+  { label: '附件', key: 'attachments', originalKey: 'attachments' }, // This will now be a "virtual" field
+  { label: '排入會議', key: '排入會議', originalKey: '排入會議' }
 ])
 
 // New function to format timestamp strings more robustly

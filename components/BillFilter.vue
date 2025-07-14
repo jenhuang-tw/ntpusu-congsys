@@ -72,6 +72,30 @@
           </select>
         </div>
 
+        <!-- 日期範圍篩選 -->
+        <div class="filter-group">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            提案日期起
+          </label>
+          <input
+            v-model="localFilters.dateFrom"
+            type="date"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+
+        <div class="filter-group">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            提案日期迄
+          </label>
+          <input
+            v-model="localFilters.dateTo"
+            type="date"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+          />
+        </div>
+        
+
         <!-- 案由篩選 -->
         <div class="filter-group">
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -111,28 +135,19 @@
           />
         </div>
 
-        <!-- 日期範圍篩選 -->
+        <!-- 排入會議篩選 -->
         <div class="filter-group">
           <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            提案日期起
+            排入會議
           </label>
           <input
-            v-model="localFilters.dateFrom"
-            type="date"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            v-model="localFilters.排入會議"
+            type="text"
+            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            placeholder="排入會議關鍵字..."
           />
         </div>
 
-        <div class="filter-group">
-          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            提案日期迄
-          </label>
-          <input
-            v-model="localFilters.dateTo"
-            type="date"
-            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-          />
-        </div>
       </div>
 
       <!-- 操作按鈕 -->
@@ -174,6 +189,7 @@ const localFilters = ref({
   案由: '',
   說明: '',
   辦法: '',
+  排入會議: '',
   dateFrom: '',
   dateTo: '',
   ...props.filters
@@ -205,6 +221,7 @@ const clearFilters = () => {
     案由: '',
     說明: '',
     辦法: '',
+    排入會議: '',
     dateFrom: '',
     dateTo: ''
   }

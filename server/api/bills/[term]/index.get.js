@@ -87,6 +87,12 @@ export default defineEventHandler(async (event) => {
       });
     }
 
+    if (query.排入會議) {
+      filteredBills = filteredBills.filter(bill =>
+        bill.排入會議.includes(query.排入會議)
+      );
+    }
+
     // 按時間排序（最新的在前）
     filteredBills.sort((a, b) => {
       try {

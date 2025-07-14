@@ -83,7 +83,8 @@ export const BILL_FIELDS = {
   attachment2: '附件2',
   attachment3: '附件3',
   attachment4: '附件4',
-  attachment5: '附件5'
+  attachment5: '附件5',
+  arrangeMeet: '排入會議'
 };
 
 // 隱藏欄位（在詳細頁面不顯示）
